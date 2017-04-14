@@ -30,9 +30,31 @@ top:2%;
 right:2%;
 }
 .btn{
-background-color: #4285F4;
-border: none
+    background-color: #4285F4;
+    border: none;
+    text-align: center;
+}
+.submit_button{
+    text-align: center;
 }
 .step-links a{
 color: #4285F4;
+}
+.word_cloud {
+    position: relative;
+    display: inherit;
+}
+.wc_word {
+    padding: 10px;
+}
+.wc_word:hover{
+    color: gray;
+    cursor: pointer;
+}
+.wc_selected{
+    padding: 10px;
+    color: rgba(66, 133, 244, 0.58);
+}
+.wc_selected:hover {
+    cursor: pointer;
 }

@@ -1,7 +1,9 @@
+{% load staticfiles %}
 <html>
     <head>
         <link rel="stylesheet" href="/static/bootstrap.min.css">
-        <link rel="stylesheet" href="/static/main.css">
+        <link rel="stylesheet" href="{% static 'main.css' %}">
+        <script src="{% static 'main.js' %}"></script>
     </head>
     
     <body>
@@ -11,7 +13,7 @@
             <p>Student Name (NetID)</p>
         </div>
         
-        <form class="form-inline global-search" method='GET'>
+        <form class="form-inline global-search" method='GET' id="wc_form">
             <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
                 C
                 <font color=#EA4335>S</font>
@@ -23,11 +25,16 @@
             
             <br><br>
             
-            <div class="form-group">
-                <input id="input" type="text" name="search" class="form-control" placeholder="Your Input">
+            <div class="word_cloud">
+            {% for  i in "xxxxxxxxxx"%}
+                <span class="wc_word" id="{{ forloop.counter0 }}" onclick="wc_selection(event)">{{ forloop.counter0 }}</span>
+            {% endfor %}
+            <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input" hidden>
             </div>
-            <button type="submit" class="btn btn-info"> Go! </button>
         </form>
+        <div class="submit_button">
+            <button class="btn btn-info" onclick="submit_form()"> Go! </button>
+        </div>
         
         <div class="form-inline global-search">
             <h4>Output</h4><br>
