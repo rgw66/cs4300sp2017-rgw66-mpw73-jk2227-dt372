@@ -11,6 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def index(request):
     output_list = ''
     output=''
+    words=["Oh","My","God","This","Is","A", "Test"]
     if request.GET.get('search'):
         search = request.GET.get('search')
         output_list = find_similar(search)
@@ -25,4 +26,5 @@ def index(request):
     return render_to_response('project_template/index.html', 
                           {'output': output,
                            'magic_url': request.get_full_path(),
+                           'words': words,
                            })

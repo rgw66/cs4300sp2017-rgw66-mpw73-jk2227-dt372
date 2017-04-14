@@ -26,8 +26,8 @@
             <br><br>
             
             <div class="word_cloud">
-            {% for  i in "xxxxxxxxxx"%}
-                <span class="wc_word" id="{{ forloop.counter0 }}" onclick="wc_selection(event)">{{ forloop.counter0 }}</span>
+            {% for  word in words%}
+                <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
             {% endfor %}
             <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input" hidden>
             </div>
