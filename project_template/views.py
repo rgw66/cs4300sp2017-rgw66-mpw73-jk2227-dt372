@@ -6,12 +6,13 @@ from django.template import loader
 from .form import QueryForm
 from .test import find_similar
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import json
 
 # Create your views here.
 def index(request):
     output_list = ''
     output=''
-    words=["Oh","My","God","This","Is","A", "Test"]
+    words=json.load(open("jsons/words.json"))
     if request.GET.get('search'):
         search = request.GET.get('search')
         output_list = find_similar(search)

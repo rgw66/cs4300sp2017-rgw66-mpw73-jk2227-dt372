@@ -3,6 +3,7 @@
     <head>
         <link rel="stylesheet" href="/static/bootstrap.min.css">
         <link rel="stylesheet" href="{% static 'main.css' %}">
+        <script src="{% static 'jquery-3.2.1.min.js' %}"></script>
         <script src="{% static 'main.js' %}"></script>
     </head>
     
@@ -12,52 +13,59 @@
             <p>Project Name</p>
             <p>Student Name (NetID)</p>
         </div>
-        
-        <form class="form-inline global-search" method='GET' id="wc_form">
-            <h1 style="font-size: 55px; font-family:Futura; color: #4285F4">
-                C
-                <font color=#EA4335>S</font>
-                <font color=#FBBC05>4</font>
-                3
-                <font color=#34A853>0</font>
-                <font color=#EA4335>0</font>
-            </h1>
-            
-            <br><br>
-            
-            <div class="word_cloud">
-            {% for  word in words%}
-                <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
-            {% endfor %}
-            <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input" hidden>
-            </div>
-        </form>
-        <div class="submit_button">
-            <button class="btn btn-info" onclick="submit_form()"> Go! </button>
+        <h1 style="font-size: 55px; font-family:Futura; color: #626262">
+                        <font color="black">Ho</font><font color="#589442">tel</font>
+                         or
+                        <font color="#ff5a5f">Airbnb</font>?
+        </h1>
+        {% if not output %}
+        <div id="main_head">
+        {% else %}
+        <div style="display: none" id="main_head">
+        {% endif %}
+            <button class="btn btn-info" onclick="show_words(event)"> Start Search </button>
         </div>
-        
-        <div class="form-inline global-search">
+        {% if output %}
+        <div id="main_page">
+        {% else %}
+        <div style="display: none" id="main_page">
+        {% endif %}
+            <form class="form-inline global-search" method='GET' id="wc_form">
+                <div class="word_cloud">
+                {% for  word in words %}
+                    <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
+                {% endfor %}
+                <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input" hidden>
+                </div>
+            </form>
+            <div style="display: none" class="submit_button" id="submit_button">
+                <button class="btn btn-info" onclick="submit_form()"> Go! </button>
+            </div>
+            {% if output %}
             <h4>Output</h4><br>
+            <div class="output">
             {% for line in output %}
-                {{line}}<br>
+                <div class="tile">{{line}}</div>
             {% endfor %}
-            
+            </div>
+
             <div class="pagination">
                 <span class="step-links">
                     {% if output.has_previous %}
                     <a href= "{{magic_url}}&page={{ output.previous_page_number }}">previous</a>
                     {% endif %}
-                    
+
                     <!-- Showing the page numbers in Html Page -->
                     <span class="current">
                     Page _{{ output.number }}_ of _{{ output.paginator.num_pages }}_
                     </span>
-                    
+
                     {% if output.has_next %}
                     <a href= "{{magic_url}}&page={{ output.next_page_number }}">next</a>
                     {% endif %}
                 </span>
             </div>
+            {% endif %}
         </div>
     </body>
 </html>

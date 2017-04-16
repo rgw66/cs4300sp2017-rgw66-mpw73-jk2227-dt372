@@ -1,33 +1,35 @@
 @media (min-width: 1200px) {
-.container {
-    max-width: 970px;
-}
+    .container {
+        max-width: 970px;
+    }
 }
 @media (min-width:400px){
-.global-search {
-padding: 20px 0;
-text-align:center;
-}
-body {
-padding-top: 15%;
-padding-bottom: 15px;
-}
-.global-search {
-text-align:center;
-padding:10px;
-}
-.global-search .form-control {
-width:500px;
-}
-.global-search * {
-display:inline-block;
-margin-bottom:0;
-}
+    .global-search {
+        padding: 20px 0;
+        text-align:center;
+    }
+    body {
+        padding-top: 15%;
+        padding-bottom: 15px;
+        text-align: center;
+        "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    .global-search {
+        text-align:center;
+        padding:10px;
+    }
+    .global-search .form-control {
+        width:500px;
+    }
+    .global-search * {
+        display:inline-block;
+        margin-bottom:0;
+    }
 }
 .topcorner{
-position:absolute;
-top:2%;
-right:2%;
+    position:absolute;
+    top:2%;
+    right:2%;
 }
 .btn{
     background-color: #4285F4;
@@ -40,9 +42,13 @@ right:2%;
 .step-links a{
 color: #4285F4;
 }
+
+/*word cloud styling*/
 .word_cloud {
     position: relative;
     display: inherit;
+    width: 600px;
+    margin: auto;
 }
 .wc_word {
     padding: 10px;
@@ -56,5 +62,24 @@ color: #4285F4;
     color: rgba(66, 133, 244, 0.58);
 }
 .wc_selected:hover {
+    cursor: pointer;
+}
+
+/*airbnb and hotel tile styling*/
+.output {
+    text-align: center;
+    width: 950px;
+    margin: auto;
+}
+.tile {
+    display: inline-block;
+    width: 300px;
+    height: 150px;
+    border: 1px solid black;
+    border-radius: 15px;
+    margin: 2px;
+}
+.tile:hover{
+    background-color: rgba(66, 133, 244, 0.22);
     cursor: pointer;
 }
