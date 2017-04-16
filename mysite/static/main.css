@@ -9,7 +9,7 @@
         text-align:center;
     }
     body {
-        padding-top: 15%;
+        padding-top: 5%;
         padding-bottom: 15px;
         text-align: center;
         "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -68,7 +68,7 @@ color: #4285F4;
 /*airbnb and hotel tile styling*/
 .output {
     text-align: center;
-    width: 950px;
+    width: 400px;
     margin: auto;
 }
 .tile {
