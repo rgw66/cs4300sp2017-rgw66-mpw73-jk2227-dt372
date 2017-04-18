@@ -4,7 +4,6 @@
 
 var selected_words = [];
 var wc_selection = function(e){
-    $("#submit_button").fadeIn(200);
     if (e.target.className == "wc_word") {
         selected_words.push(e.target.id);
         e.target.className = "wc_selected";
@@ -13,6 +12,8 @@ var wc_selection = function(e){
         selected_words.splice(i,1);
         e.target.className = "wc_word";
     }
+    var selection = selected_words.join(" ");
+    $("#input").val(selection);
 };
 
 var submit_form = function(){

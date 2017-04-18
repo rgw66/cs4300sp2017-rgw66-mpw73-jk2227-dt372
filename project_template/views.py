@@ -53,11 +53,15 @@ def index(request):
     words=json.load(open("jsons/words.json"))
     airbnb_output = []
     hotel_output = []
+    query = ''
     if request.GET.get('search'):
       query = request.GET.get('search')
 
       hotel_output = get_hotel_results(query, ta_reviews_data, hotel_information, index_to_hotel, ta_vectorizer, words_compressed_ta, docs_compressed_ta)
       airbnb_output = get_airbnb_results(query, airbnb_reviews, listings_information, index_to_listing, airbnb_vectorizer, words_compressed_airbnb, docs_compressed_airbnb)
+
+      print hotel_output[0]
+      print airbnb_output[0]
         #hotel_output = hotel_list
         #airbnb_output = airbnb_list
         # search = request.GET.get('search')
@@ -73,6 +77,7 @@ def index(request):
         #     output = paginator.page(paginator.num_pages)
     return render_to_response('project_template/index.html',
                           {'airbnb_output': airbnb_output,
+                           'search': query,
                            'hotel_output': hotel_output,
                            'magic_url': request.get_full_path(),
                            'words': words,

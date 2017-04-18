@@ -35,24 +35,40 @@
                 {% for  word in words %}
                     <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
                 {% endfor %}
-                <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input" hidden>
+                <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">
                 </div>
             </form>
-            <div style="display: none" class="submit_button" id="submit_button">
+            <div class="submit_button" id="submit_button">
                 <button class="btn btn-info" onclick="submit_form()"> Go! </button>
             </div>
+            <br/>
             {% if airbnb_output or hotel_output %}
-            <h4>Output</h4><br>
+            <h4>Results For:</h4>
+            <p>{{ search }}</p><br/>
             <div class="output">
                 <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
             {% for line in hotel_output %}
-                <div class="tile">{{line.review}}</div>
+                <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                    <img src="{% static 'img/tripadvisor1600.png'%}" class="tile_icon">
+                    <b>{{ line.name }}</b>
+                    <br/>
+                    <br/>
+                    <br/>
+                    {{line.review}}
+                </a>
             {% endfor %}
             </div>
             <div class="output">
                 <h3><font color="#ff5a5f">Airbnb</font></h3>
                 {% for line in airbnb_output %}
-                <div class="tile">{{line.review}}</div>
+                <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                    <img src="{{ line.image_url }}" class="tile_icon">
+                    <b>{{ line.name }}</b>
+                    <br/>
+                    <br/>
+                    <br/>
+                    {{line.review}}
+                </a>
                 {% endfor %}
             </div>
 
