@@ -5,7 +5,13 @@ import json
 import pickle
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+try: 
+	sid = SentimentIntensityAnalyzer()
+except: 
+	nltk.download("vader_lexicon")
+	sid = SentimentIntensityAnalyzer()
 
 def get_hotel_tuples(hotel_information, ta_reviews):
 	hotel_to_key_index = {} 
@@ -58,6 +64,7 @@ def get_airbnb_results(query, airbnb_reviews, airbnb_listings, index_to_listing,
 		print "Listing URL: " + airbnb_listing_info['listing_url']
 		print "Image URL: " + airbnb_listing_info['picture_url']
 		print "Score (Similarity): " + str(score)
+		print sid.polarity_scores(airbnb_reviews[ind])['compound']
 		print "**************"
 		airbnb_results.append({
 			"id": listing_id, 
@@ -65,7 +72,8 @@ def get_airbnb_results(query, airbnb_reviews, airbnb_listings, index_to_listing,
 			"review": airbnb_reviews[ind],
 			"listing_url": airbnb_listing_info['listing_url'],
 			"image_url": airbnb_listing_info['picture_url'],
-			"score": score
+			"score": score,
+			"sentiment_analysis_score": sid.polarity_scores(airbnb_reviews[ind])['compound']
 			});
 	return airbnb_results 
 
@@ -83,6 +91,7 @@ def get_hotel_results(query, ta_reviews, hotel_information, index_to_hotel, vect
 		print "Review: \n" + review_info['review']
 		print "Hotel URL: " + hotel_info[0]
 		print "Score (Similarity): " + str(score)
+		print sid.polarity_scores(review_info['review'])['compound']
 		print "**************"
 		hotel_results.append({
 			"id": hotel_id,
@@ -90,7 +99,8 @@ def get_hotel_results(query, ta_reviews, hotel_information, index_to_hotel, vect
 			"review_title": review_info['title'],
 			"review": review_info['review'],
 			"listing_url": hotel_info[0],
-			"score": score
+			"score": score,
+			"sentiment_analysis_score": sid.polarity_scores(review_info['review'])['compound']
 			});
 	return hotel_results
 
