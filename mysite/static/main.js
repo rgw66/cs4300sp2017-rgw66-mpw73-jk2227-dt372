@@ -30,6 +30,11 @@ var show_words = function(e){
     $("#main_page").delay(200).fadeIn(300);
 };
 
-var colorize = function(c){
-    console.log(color(c));
-};
+$(document).ready(function(){
+    d3.selectAll('.sentiments').each(function(){
+        console.log(parseInt(this.innerHTML));
+
+
+        this.style = "background-color: " + color(this.innerHTML) + ";"
+    });
+});

@@ -54,7 +54,8 @@
                     <img src="{% static 'img/tripadvisor1600.png'%}" class="tile_icon">
                     <b>{{ line.name }}</b><br/>
                     Sentiment:
-                    <span onload="colorize({{ line.sentiment_analysis_score }})">{{ line.sentiment_analysis_score }}</span>
+                    <span class="sentiments">
+                        {{ line.sentiment_analysis_score }}</span>
                     <br/>
                     <br/>
                     <br/>
@@ -68,7 +69,9 @@
                 <a href="{{ line.listing_url }}" class="tile" target="_blank">
                     <img src="{{ line.image_url }}" class="tile_icon">
                     <b>{{ line.name }}</b><br/>
-                    Sentiment: <span>{{ line.sentiment_analysis_score }}</span>
+                    Sentiment:
+                    <span class="sentiments">
+                        {{ line.sentiment_analysis_score }}</span>
                     <br/>
                     <br/>
                     <br/>
