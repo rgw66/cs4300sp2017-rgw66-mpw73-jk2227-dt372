@@ -4,7 +4,9 @@
         <link rel="stylesheet" href="/static/bootstrap.min.css">
         <link rel="stylesheet" href="{% static 'main.css' %}">
         <script src="{% static 'jquery-3.2.1.min.js' %}"></script>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
         <script src="{% static 'main.js' %}"></script>
+
     </head>
     
     <body>
@@ -50,7 +52,9 @@
             {% for line in hotel_output %}
                 <a href="{{ line.listing_url }}" class="tile" target="_blank">
                     <img src="{% static 'img/tripadvisor1600.png'%}" class="tile_icon">
-                    <b>{{ line.name }}</b>
+                    <b>{{ line.name }}</b><br/>
+                    Sentiment:
+                    <span onload="colorize({{ line.sentiment_analysis_score }})">{{ line.sentiment_analysis_score }}</span>
                     <br/>
                     <br/>
                     <br/>
@@ -63,7 +67,8 @@
                 {% for line in airbnb_output %}
                 <a href="{{ line.listing_url }}" class="tile" target="_blank">
                     <img src="{{ line.image_url }}" class="tile_icon">
-                    <b>{{ line.name }}</b>
+                    <b>{{ line.name }}</b><br/>
+                    Sentiment: <span>{{ line.sentiment_analysis_score }}</span>
                     <br/>
                     <br/>
                     <br/>

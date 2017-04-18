@@ -1,6 +1,9 @@
 /**
  * Created by rgw66 on 4/14/17.
  */
+var color = d3.scaleLinear().domain([-1,1])
+      .interpolate(d3.interpolateHcl)
+      .range([d3.rgb("#F4002D"), d3.rgb("#1AF40A")]);
 
 var selected_words = [];
 var wc_selection = function(e){
@@ -25,4 +28,8 @@ var submit_form = function(){
 var show_words = function(e){
     $("#main_head").fadeOut(200);
     $("#main_page").delay(200).fadeIn(300);
+};
+
+var colorize = function(c){
+    console.log(color(c));
 };

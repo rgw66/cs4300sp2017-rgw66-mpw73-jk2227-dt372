@@ -5,6 +5,7 @@ import json
 import pickle
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 try: 
