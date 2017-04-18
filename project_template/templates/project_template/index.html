@@ -18,14 +18,14 @@
                          or
                         <font color="#ff5a5f">Airbnb</font>?
         </h1>
-        {% if not output %}
+        {% if not airbnb_output %}
         <div id="main_head">
         {% else %}
         <div style="display: none" id="main_head">
         {% endif %}
             <button class="btn btn-info" onclick="show_words(event)"> Start Search </button>
         </div>
-        {% if output %}
+        {% if airbnb_output or hotel_output %}
         <div id="main_page">
         {% else %}
         <div style="display: none" id="main_page">
@@ -41,30 +41,37 @@
             <div style="display: none" class="submit_button" id="submit_button">
                 <button class="btn btn-info" onclick="submit_form()"> Go! </button>
             </div>
-            {% if output %}
+            {% if airbnb_output or hotel_output %}
             <h4>Output</h4><br>
             <div class="output">
-            {% for line in output %}
-                <div class="tile">{{line}}</div>
+                <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
+            {% for line in hotel_output %}
+                <div class="tile">{{line.review}}</div>
             {% endfor %}
             </div>
-
-            <div class="pagination">
-                <span class="step-links">
-                    {% if output.has_previous %}
-                    <a href= "{{magic_url}}&page={{ output.previous_page_number }}">previous</a>
-                    {% endif %}
-
-                    <!-- Showing the page numbers in Html Page -->
-                    <span class="current">
-                    Page _{{ output.number }}_ of _{{ output.paginator.num_pages }}_
-                    </span>
-
-                    {% if output.has_next %}
-                    <a href= "{{magic_url}}&page={{ output.next_page_number }}">next</a>
-                    {% endif %}
-                </span>
+            <div class="output">
+                <h3><font color="#ff5a5f">Airbnb</font></h3>
+                {% for line in airbnb_output %}
+                <div class="tile">{{line.review}}</div>
+                {% endfor %}
             </div>
+
+{#            <div class="pagination">#}
+{#                <span class="step-links">#}
+{#                    {% if output.has_previous %}#}
+{#                    <a href= "{{magic_url}}&page={{ output.previous_page_number }}">previous</a>#}
+{#                    {% endif %}#}
+{##}
+{#                    <!-- Showing the page numbers in Html Page -->#}
+{#                    <span class="current">#}
+{#                    Page _{{ output.number }}_ of _{{ output.paginator.num_pages }}_#}
+{#                    </span>#}
+{##}
+{#                    {% if output.has_next %}#}
+{#                    <a href= "{{magic_url}}&page={{ output.next_page_number }}">next</a>#}
+{#                    {% endif %}#}
+{#                </span>#}
+{#            </div>#}
             {% endif %}
         </div>
     </body>

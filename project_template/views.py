@@ -8,24 +8,36 @@ from .test import find_similar
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 
+hotel_review = {'review': 'This is a wonderful hotel. Well proportioned room. I loved the decor. The restaurant and staff were great. Extra big shower caps was only the tell tale sign that they take care of all the details. Really friendly and helpful staff.', 'review_stars': '5 of 5 bubbles', 'hotel_name':  'Gramercy Park Hotel' , 'title': 'Beautiful decor'}
+
+airbnb_review = {'review': 'I only saw Bobby for one brief minute in passing but our conversation seem like i knew him forever He has very good communication on checking in and telling you about his place The location is to die for You are actually only minutes away to the heart of Time Square Checking in the Lovely High Rise building was a snap having a 24 hr doorman Very safe to walk to at any time at nite male or female And the view from his place is a very nice scene of New York City I will truly come back and he was a great host'}
+
+hotel_list = [hotel_review for _ in range(10)]
+
+airbnb_list = [airbnb_review for _ in range(10)]
+
 # Create your views here.
 def index(request):
-    output_list = ''
-    output=''
+    hotel_output = []
+    airbnb_output = []
     words=json.load(open("jsons/words.json"))
     if request.GET.get('search'):
-        search = request.GET.get('search')
-        output_list = find_similar(search)
-        paginator = Paginator(output_list, 10)
-        page = request.GET.get('page')
-        try:
-            output = paginator.page(page)
-        except PageNotAnInteger:
-            output = paginator.page(1)
-        except EmptyPage:
-            output = paginator.page(paginator.num_pages)
-    return render_to_response('project_template/index.html', 
-                          {'output': output,
+        hotel_output = hotel_list
+        airbnb_output = airbnb_list
+        # search = request.GET.get('search')
+        # output_list = find_similar(search)
+        # paginator = Paginator(output_list, 10)
+        # page = request.GET.get('page')
+        #
+        # try:
+        #     output = paginator.page(page)
+        # except PageNotAnInteger:
+        #     output = paginator.page(1)
+        # except EmptyPage:
+        #     output = paginator.page(paginator.num_pages)
+    return render_to_response('project_template/index.html',
+                          {'airbnb_output': airbnb_output,
+                           'hotel_output': hotel_output,
                            'magic_url': request.get_full_path(),
                            'words': words,
                            })

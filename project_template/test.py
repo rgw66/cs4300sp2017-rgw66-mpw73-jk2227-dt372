@@ -2,6 +2,7 @@ from .models import Docs
 import os
 import Levenshtein
 import json
+import pickle
 
 
 def read_file(n):
@@ -22,3 +23,4 @@ def find_similar(q):
 			result.append(((_edit(q, m)), m))
 
 	return sorted(result, key=lambda tup: tup[0])
+

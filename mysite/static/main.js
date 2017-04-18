@@ -24,6 +24,4 @@ var submit_form = function(){
 var show_words = function(e){
     $("#main_head").fadeOut(200);
     $("#main_page").delay(200).fadeIn(300);
-    // document.getElementById("main_page").style="opacity:1;";
-    // document.getElementById("main_head").style="opacity:0;";
 };
