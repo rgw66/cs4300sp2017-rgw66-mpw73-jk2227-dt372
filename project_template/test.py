@@ -25,30 +25,52 @@ def get_hotel_tuples(hotel_information, ta_reviews):
 		index_to_hotel, 
 		reviews)
 
-def search_svd(query, index_to_hotel, vectorizer, words_compressed, docs_compressed, top_k = 10):
+def get_airbnb_tuples(airbnb_reviews):
+	r = []
+	i = 0
+	index_to_listing = {}
+	for listing_id, reviews in airbnb_reviews.items():
+		for review in reviews: 
+			r.append(review)
+			index_to_listing[i] = listing_id
+			i += 1
+	return (index_to_listing, r)
+
+def search_svd(query, mapping, vectorizer, words_compressed, docs_compressed, top_k = 10):
     vec = vectorizer.transform([query])
-    print "==="
-    print vec.shape
-    print words_compressed.shape
-    print docs_compressed.shape
-    print "==="
     results = np.dot(vec * words_compressed, docs_compressed)
-    print "results"
-    print results.shape
-    print "end results"
     indices = np.squeeze(np.asarray(np.argsort(results)[:,::-1][:,:top_k]))
     scores = np.squeeze(np.asarray(np.sort(results)[:,::-1][:,:top_k]))
-    print indices.shape
     listings = np.zeros(indices.shape)
-    print index_to_hotel[20177]
     for i in range(indices.shape[0]):
-        #for j in range(1): #range(indices.shape[1]):
-            # listings[i,j] = index_to_hotel[indices[i,j]]
-        listings[i] = index_to_hotel[indices[i]]
-        print listings[i]
+        listings[i] = mapping[indices[i]]
     return (listings.tolist(), indices.tolist(), scores.tolist())
 
+def get_airbnb_results(query, airbnb_reviews, airbnb_listings, index_to_listing, vectorizer, words_compressed, docs_compressed):
+	airbnb_results = [] 
+	listings, indices, scores = search_svd(query, index_to_listing, vectorizer, words_compressed, docs_compressed)
+	for (l, ind, score) in zip(listings, indices, scores):
+		listing_id = str(int(l))
+		airbnb_listing_info = airbnb_listings[listing_id]
+		print "Listing ID: " + listing_id 
+		print "Listing Name: " + airbnb_listing_info['name']
+		print "Review : \n" + airbnb_reviews[ind]
+		print "Listing URL: " + airbnb_listing_info['listing_url']
+		print "Image URL: " + airbnb_listing_info['picture_url']
+		print "Score (Similarity): " + str(score)
+		print "**************"
+		airbnb_results.append({
+			"id": listing_id, 
+			"name": airbnb_listing_info['name'],
+			"review": airbnb_reviews[ind],
+			"listing_url": airbnb_listing_info['listing_url'],
+			"image_url": airbnb_listing_info['picture_url'],
+			"score": score
+			});
+	return airbnb_results 
+
 def get_hotel_results(query, ta_reviews, hotel_information, index_to_hotel, vectorizer, words_compressed, docs_compressed):
+	hotel_results = []
 	hotels, indices, scores = search_svd(query, index_to_hotel, vectorizer, words_compressed, docs_compressed)
 	hotel_keys = hotel_information.keys()
 	for (l, ind, score) in zip(hotels, indices, scores):
@@ -62,14 +84,13 @@ def get_hotel_results(query, ta_reviews, hotel_information, index_to_hotel, vect
 		print "Hotel URL: " + hotel_info[0]
 		print "Score (Similarity): " + str(score)
 		print "**************"
-
-def find_similar(q):
-	transcripts = read_file(1)
-	result = []
-	for transcript in transcripts:
-		for item in transcript:
-			m = item['text']
-			result.append(((_edit(q, m)), m))
-
-	return sorted(result, key=lambda tup: tup[0])
+		hotel_results.append({
+			"id": hotel_id,
+			"name": hotel_keys[hotel_id],
+			"review_title": review_info['title'],
+			"review": review_info['review'],
+			"listing_url": hotel_info[0],
+			"score": score
+			});
+	return hotel_results
 

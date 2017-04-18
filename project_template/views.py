@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from .models import Docs
 from django.template import loader
 from .form import QueryForm
-from .test import get_hotel_results, get_hotel_tuples
+from .test import get_hotel_results, get_hotel_tuples, get_airbnb_tuples, get_airbnb_results
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 import cPickle as pickle
@@ -24,10 +24,6 @@ ta_tfidf = ta_vectorizer.fit_transform(ta_reviews)
 
 #words_compressed_ta, _, docs_compressed_ta = svds(ta_tfidf, k=10)
 docs_compressed_ta, _, words_compressed_ta = svds(ta_tfidf, k=10)
-print "wtf???"
-print docs_compressed_ta.shape
-print words_compressed_ta.shape
-print "pls"
 docs_compressed_ta = docs_compressed_ta.T
 words_compressed_ta = words_compressed_ta.T
 
@@ -37,32 +33,31 @@ words_compressed_ta = words_compressed_ta.T
 #with open('data/words_by_10_svd_ta.pickle','rb') as f:
 #  docs_compressed_ta = pickle.load(f) 
 
-#with open('data/airbnb_reviews.pickle','rb') as f:
-#  airbnb_reviews = pickle.load(f)
+with open('data/airbnb_reviews.pickle','rb') as f:
+ airbnb_reviews_data = pickle.load(f)
 
-#with open('data/airbnb_listings.pickle','rb') as f:
-#  listings_information = pickle.load(f)
+with open('data/airbnb_listings.pickle','rb') as f:
+ listings_information = pickle.load(f)
 
+(index_to_listing, airbnb_reviews) = get_airbnb_tuples(airbnb_reviews_data)
 
+airbnb_vectorizer = TfidfVectorizer(stop_words='english', max_df = 0.7)
+airbnb_tfidf = airbnb_vectorizer.fit_transform(airbnb_reviews)
 
-hotel_review = {'review': 'This is a wonderful hotel. Well proportioned room. I loved the decor. The restaurant and staff were great. Extra big shower caps was only the tell tale sign that they take care of all the details. Really friendly and helpful staff.', 'review_stars': '5 of 5 bubbles', 'hotel_name':  'Gramercy Park Hotel' , 'title': 'Beautiful decor'}
-
-airbnb_review = {'review': 'I only saw Bobby for one brief minute in passing but our conversation seem like i knew him forever He has very good communication on checking in and telling you about his place The location is to die for You are actually only minutes away to the heart of Time Square Checking in the Lovely High Rise building was a snap having a 24 hr doorman Very safe to walk to at any time at nite male or female And the view from his place is a very nice scene of New York City I will truly come back and he was a great host'}
-
-hotel_list = [hotel_review for _ in range(10)]
-
-airbnb_list = [airbnb_review for _ in range(10)]
+docs_compressed_airbnb, _, words_compressed_airbnb = svds(airbnb_tfidf, k=10)
+docs_compressed_airbnb = docs_compressed_airbnb.T
+words_compressed_airbnb = words_compressed_airbnb.T
 
 # Create your views here.
 def index(request):
-    hotel_output = []
-    airbnb_output = []
     words=json.load(open("jsons/words.json"))
+    airbnb_output = []
+    hotel_output = []
     if request.GET.get('search'):
       query = request.GET.get('search')
 
-      get_hotel_results(query, ta_reviews_data, hotel_information, index_to_hotel, ta_vectorizer, words_compressed_ta, docs_compressed_ta)
-      
+      hotel_output = get_hotel_results(query, ta_reviews_data, hotel_information, index_to_hotel, ta_vectorizer, words_compressed_ta, docs_compressed_ta)
+      airbnb_output = get_airbnb_results(query, airbnb_reviews, listings_information, index_to_listing, airbnb_vectorizer, words_compressed_airbnb, docs_compressed_airbnb)
         #hotel_output = hotel_list
         #airbnb_output = airbnb_list
         # search = request.GET.get('search')
