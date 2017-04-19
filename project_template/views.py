@@ -11,11 +11,6 @@ import cPickle as pickle
 from scipy.sparse.linalg import svds
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
-
-# Pulling data off s3 
-
-
-
 with open('data/tripadvisor_reviews.pickle','rb') as f:
   ta_reviews_data = pickle.load(f)
 
