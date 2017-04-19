@@ -19,12 +19,20 @@ with open('data/tripadvisor_hotel_info.pickle','rb') as f:
 
 (hotel_to_key_index, index_to_hotel, ta_reviews) = get_hotel_tuples(hotel_information, ta_reviews_data)
 
-ta_vectorizer = TfidfVectorizer(stop_words='english', max_df = 0.7)
+#ta_vectorizer = TfidfVectorizer(stop_words='english', max_df = 0.7)
+
+with open('data/ta_vectorizer.pickle','rb') as f:
+  ta_vectorizer = pickle.load(f)
+
 ta_tfidf = ta_vectorizer.fit_transform(ta_reviews)
 
-#words_compressed_ta, _, docs_compressed_ta = svds(ta_tfidf, k=10)
-docs_compressed_ta, _, words_compressed_ta = svds(ta_tfidf, k=10)
-docs_compressed_ta = docs_compressed_ta.T
+words_compressed_ta, _, docs_compressed_ta = svds(ta_tfidf, k=10)
+#docs_compressed_ta, _, words_compressed_ta = svds(ta_tfidf, k=10)
+#docs_compressed_ta = docs_compressed_ta.T
+
+with open('data/docs_compressed_ta.pickle','rb') as f:
+  docs_compressed_ta = pickle.load(f)
+
 words_compressed_ta = words_compressed_ta.T
 
 #with open('data/10_by_docs_svd_ta.pickle','rb') as f:
@@ -41,12 +49,22 @@ with open('data/airbnb_listings.pickle','rb') as f:
 
 (index_to_listing, airbnb_reviews) = get_airbnb_tuples(airbnb_reviews_data)
 
-airbnb_vectorizer = TfidfVectorizer(stop_words='english', max_df = 0.7)
+#airbnb_vectorizer = TfidfVectorizer(stop_words='english', max_df = 0.7)
+with open('data/airbnb_vectorizer.pickle','rb') as f:
+  airbnb_vectorizer = pickle.load(f)
+
 airbnb_tfidf = airbnb_vectorizer.fit_transform(airbnb_reviews)
 
-docs_compressed_airbnb, _, words_compressed_airbnb = svds(airbnb_tfidf, k=10)
-docs_compressed_airbnb = docs_compressed_airbnb.T
-words_compressed_airbnb = words_compressed_airbnb.T
+#docs_compressed_airbnb, _, words_compressed_airbnb = svds(airbnb_tfidf, k=10)
+#docs_compressed_airbnb = docs_compressed_airbnb.T
+#words_compressed_airbnb = words_compressed_airbnb.T
+
+
+with open('data/docs_compressed_airbnb.pickle','rb') as f:
+  docs_compressed_airbnb = pickle.load(f)
+
+with open('data/words_compressed_airbnb.pickle','rb') as f:
+  words_compressed_airbnb = pickle.load(f)
 
 # Create your views here.
 def index(request):
