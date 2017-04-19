@@ -26,7 +26,6 @@ cryptography==1.7.1
 cycler==0.10.0
 Cython==0.25.2
 cytoolz==0.8.2
-dask==0.13.0
 decorator==4.0.11
 dill==0.2.5
 dj-database-url==0.4.0
@@ -64,7 +63,6 @@ jupyter-client==4.4.0
 jupyter-console==5.0.0
 jupyter-core==4.2.1
 lazy-object-proxy==1.2.2
-llvmlite==0.15.0
 locket==0.2.0
 lxml==3.7.2
 MarkupSafe==0.23
