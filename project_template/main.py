@@ -1,12 +1,7 @@
 from __future__ import print_function
-from scipy import sparse
-from sklearn.decomposition import NMF, LatentDirichletAllocation
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.manifold import TSNE
-from sklearn.preprocessing import normalize
+from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 import pickle
-import matplotlib.pyplot as plt
 
 # load in
 ta_data = pickle.load(open("data/tripadvisor_reviews.pickle", 'rb'))
