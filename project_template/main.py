@@ -127,8 +127,8 @@ def get_airbnb_results(query):
         # print("Listing URL: " + airbnb_listing_info['listing_url'])
         # print("Image URL: " + airbnb_listing_info['picture_url'])
         # print("Score (Similarity): " + str(score))
-        print("**************")
-        print(airbnb_listing_info)
+        # print("**************")
+        # print(airbnb_listing_info)
         ordered_listings.append({
             'name': airbnb_listing_info['name'],
             'listing_url': airbnb_listing_info['listing_url'],
