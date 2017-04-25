@@ -2,8 +2,8 @@ from __future__ import print_function
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 import pickle
+import boto3
 
-# load in
 
 ta_listings = pickle.load(open("data/tripadvisor_hotel_info.pickle", 'rb'))
 airbnb_listings = pickle.load(open("data/airbnb_listings.pickle", 'rb'))
@@ -15,6 +15,22 @@ ta_lda_ht = pickle.load(open("data/ta_lda_ht.mat"))
 ta_lda_tt = pickle.load(open("data/ta_lda_tt.mat"))
 airbnb_lda_ht = pickle.load(open("data/airbnb_lda_ht.mat"))
 airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
+
+BUCKET_NAME = 'cs4300-dream-team'
+S3 = boto3.resource('s3')
+CLIENT = boto3.client('s3')
+
+def get_review(site,ind):
+    # site = "airbnb" or "ta" 
+    page_lower = ind/500 * 500 
+    page_upper = page_lower + 499
+    ind_in_page = ind % 500
+    page_key = "/{}_reviews/{}_review_{}-{}.txt".format(site,site,page_lower,page_upper)
+    with open('tmp.p', 'wb') as data:
+        CLIENT.download_fileobj(BUCKET_NAME,page_key,data)
+    with open('tmp.p', 'rb') as data: 
+        lst = pickle.load(data)
+    return lst[ind_in_page]
 
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k=10):
@@ -71,3 +87,4 @@ def get_hotel_results(query):
         })
     del ta_vectorizer
     return ordered_listings
+
