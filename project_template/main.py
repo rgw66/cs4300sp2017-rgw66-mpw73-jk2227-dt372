@@ -55,9 +55,10 @@ for (j, l) in airbnb_index_to_listing.items():
     col = len(ta_data)+j
     total_adj_mat[row,col] += 1
     total_mat_index_to_listing[row] = l
+
 ta_vectorizer = TfidfVectorizer(stop_words='english', min_df=0.05, max_df=0.9)
 airbnb_vectorizer = TfidfVectorizer(stop_words='english', min_df=0.05, max_df=0.9)
-total_vectorizer = TfidfVectorizer(stop_words='english', min_df=0.05, max_df=0.9)
+# total_vectorizer = TfidfVectorizer(stop_words='english', min_df=0.05, max_df=0.9)
 
 ta_tfidf = ta_vectorizer.fit_transform(ta_reviews)
 airbnb_tfidf = airbnb_vectorizer.fit_transform(airbnb_reviews)
@@ -65,8 +66,8 @@ airbnb_tfidf = airbnb_vectorizer.fit_transform(airbnb_reviews)
 ta_tfidf_feature_names = ta_vectorizer.get_feature_names()
 airbnb_tfidf_feature_names = airbnb_vectorizer.get_feature_names()
 
-total_tfidf = total_vectorizer.fit_transform(ta_reviews + airbnb_reviews)
-total_tfidf_feature_names = total_vectorizer.get_feature_names()
+# total_tfidf = total_vectorizer.fit_transform(ta_reviews + airbnb_reviews)
+# total_tfidf_feature_names = total_vectorizer.get_feature_names()
 
 ta_lda_ht = pickle.load(open("data/ta_lda_ht.mat"))
 ta_lda_dt = pickle.load(open("data/ta_lda_dt.mat"))
@@ -99,12 +100,6 @@ def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k=10)
     for i in range(indices.shape[0]):
         listings[i] = mat_to_listing_dict[indices[i]]
     return (listings.tolist(), indices.tolist(), scores.tolist())
-
-listings, indices, scores = search_lda("quiet neat cozy clean comfortable close",
-                                       airbnb_vectorizer,
-                                       airbnb_lda_ht,
-                                       airbnb_lda_tt,
-                                       airbnb_mat_index_to_listing)
 
 
 def get_airbnb_results(query):
