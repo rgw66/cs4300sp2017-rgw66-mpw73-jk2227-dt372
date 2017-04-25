@@ -1,5 +1,6 @@
 from __future__ import print_function
 from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy import sparse
 import numpy as np
 import pickle
 import boto3
@@ -16,6 +17,9 @@ ta_lda_tt = pickle.load(open("data/ta_lda_tt.mat"))
 airbnb_lda_ht = pickle.load(open("data/airbnb_lda_ht.mat"))
 airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
 
+ta_adj_mat = pickle.load(open("ta_adj_mat.pickle"))
+airbnb_adj_mat = pickle.load(open("airbnb_adj_mat.pickle"))
+
 BUCKET_NAME = 'cs4300-dream-team'
 
 ACCESS_KEY = 'AKIAJ55CDKOUVGR3GE3Q'
@@ -30,6 +34,15 @@ CLIENT = boto3.client('s3',
                     aws_secret_access_key=SECRET_KEY)
 
 
+
+
+def get_hotel_review_indices(site, hotel_ind):
+    if (site == ‘airbnb’):
+        return sparse.find(airbnb_adj_mat[hotel_ind, :])[1]
+    else:
+        return sparse.find(ta_adj_mat[hotel_ind, :])[1]
+        
+    
 def get_reviews(site,ind_lst):
     # site = "airbnb" or "ta" 
     sorted_lst = sorted(ind_lst, reverse = True)
