@@ -1,5 +1,4 @@
 from __future__ import print_function
-from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy import sparse
 import numpy as np
 import pickle
@@ -24,8 +23,8 @@ ta_lda_tt = pickle.load(open("data/ta_lda_tt.mat"))
 airbnb_lda_ht = pickle.load(open("data/airbnb_lda_ht.mat"))
 airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
 
-ta_adj_mat = pickle.load(open("ta_adj_mat.pickle"))
-airbnb_adj_mat = pickle.load(open("airbnb_adj_mat.pickle"))
+ta_adj_mat = pickle.load(open("data/ta_adj_mat.pickle"))
+airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 
 BUCKET_NAME = 'cs4300-dream-team'
 
@@ -40,12 +39,9 @@ CLIENT = boto3.client('s3',
                     aws_access_key_id=ACCESS_KEY,
                     aws_secret_access_key=SECRET_KEY)
 
-
-
-
 def get_hotel_reviews(site, hotel_ind):
     indices = None
-    if (site == ‘airbnb’):
+    if (site == 'airbnb'):
         indices = sparse.find(airbnb_adj_mat[hotel_ind, :])[1]
     else:
         indices = sparse.find(ta_adj_mat[hotel_ind, :])[1]
@@ -120,6 +116,8 @@ def get_airbnb_results(query):
             'score': str(score)
         })
     del airbnb_vectorizer
+    
+    print (get_hotel_reviews('airbnb', listings))
     return ordered_listings
 
 def get_hotel_results(query):
