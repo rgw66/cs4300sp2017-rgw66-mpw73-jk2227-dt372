@@ -17,8 +17,17 @@ airbnb_lda_ht = pickle.load(open("data/airbnb_lda_ht.mat"))
 airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
 
 BUCKET_NAME = 'cs4300-dream-team'
-S3 = boto3.resource('s3')
-CLIENT = boto3.client('s3')
+
+ACCESS_KEY = 'AKIAJ55CDKOUVGR3GE3Q'
+SECRET_KEY = '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'
+
+S3 = boto3.resource('s3',
+                    aws_access_key_id=ACCESS_KEY,
+                    aws_secret_access_key=SECRET_KEY)
+
+CLIENT = boto3.client('s3',
+                    aws_access_key_id=ACCESS_KEY,
+                    aws_secret_access_key=SECRET_KEY)
 
 def get_review(site,ind):
     # site = "airbnb" or "ta" 
