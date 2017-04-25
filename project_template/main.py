@@ -36,22 +36,38 @@ CLIENT = boto3.client('s3',
                     aws_access_key_id=ACCESS_KEY,
                     aws_secret_access_key=SECRET_KEY)
 
-def get_review(site,ind_lst):
+
+def get_reviews(site,ind_lst):
     # site = "airbnb" or "ta" 
-    sorted_lst = sorted(ind_lst)
+    sorted_lst = sorted(ind_lst, reverse = True)
+    clustered_lst = []
+    lower = 0 
+    upper = lower + 499
+    tmp = []
+    while sorted_lst != []: 
+        ind = sorted_lst.pop() 
+        if ind > upper: 
+            clustered_lst.append(tmp)
+            lower = upper + 1
+            upper = lower + 499
+            tmp = [ind]
+        else: 
+            tmp.append(ind)
+    clustered_lst.append(tmp)
+
     reviews = []
 
-    for ind in sorted_lst:
-        page_lower = ind/500 * 500 
-        page_upper = page_lower + 499
-        ind_in_page = ind % 500
-        page_key = "/{}_reviews/{}_review_{}-{}.txt".format(site,site,page_lower,page_upper)
-        with open('tmp.p', 'wb') as data:
-            CLIENT.download_fileobj(BUCKET_NAME,page_key,data)
-        with open('tmp.p', 'rb') as data: 
-            lst = pickle.load(data)
-
-        reviews.append(lst[ind_in_page])
+    for cluster in clustered_lst:
+        for ind in cluster:
+            page_lower = ind/500 * 500 
+            page_upper = page_lower + 499
+            ind_in_page = ind % 500
+            page_key = "/{}_reviews/{}_review_{}-{}.txt".format(site,site,page_lower,page_upper)
+            with open('tmp.p', 'wb') as data:
+                CLIENT.download_fileobj(BUCKET_NAME,page_key,data)
+            with open('tmp.p', 'rb') as data: 
+                lst = pickle.load(data)
+            reviews.append(lst[ind_in_page])
 
     return reviews
 
