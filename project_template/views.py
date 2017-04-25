@@ -9,7 +9,6 @@ import json
 # from .test import get_hotel_results, get_hotel_tuples, get_airbnb_tuples, get_airbnb_results
 # from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-
 # Create your views here.
 def index(request):
     words=json.load(open("jsons/words.json"))

@@ -151,3 +151,4 @@
 # docs_compressed_airbnb, _, words_compressed_airbnb = svds(airbnb_tfidf, k=10)
 # docs_compressed_airbnb = docs_compressed_airbnb.T
 # words_compressed_airbnb = words_compressed_airbnb.T
+
