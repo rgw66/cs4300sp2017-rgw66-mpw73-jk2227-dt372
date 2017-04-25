@@ -29,17 +29,24 @@ CLIENT = boto3.client('s3',
                     aws_access_key_id=ACCESS_KEY,
                     aws_secret_access_key=SECRET_KEY)
 
-def get_review(site,ind):
+def get_review(site,ind_lst):
     # site = "airbnb" or "ta" 
-    page_lower = ind/500 * 500 
-    page_upper = page_lower + 499
-    ind_in_page = ind % 500
-    page_key = "/{}_reviews/{}_review_{}-{}.txt".format(site,site,page_lower,page_upper)
-    with open('tmp.p', 'wb') as data:
-        CLIENT.download_fileobj(BUCKET_NAME,page_key,data)
-    with open('tmp.p', 'rb') as data: 
-        lst = pickle.load(data)
-    return lst[ind_in_page]
+    sorted_lst = sorted(ind_lst)
+    reviews = []
+
+    for ind in sorted_lst:
+        page_lower = ind/500 * 500 
+        page_upper = page_lower + 499
+        ind_in_page = ind % 500
+        page_key = "/{}_reviews/{}_review_{}-{}.txt".format(site,site,page_lower,page_upper)
+        with open('tmp.p', 'wb') as data:
+            CLIENT.download_fileobj(BUCKET_NAME,page_key,data)
+        with open('tmp.p', 'rb') as data: 
+            lst = pickle.load(data)
+
+        reviews.append(lst[ind_in_page])
+
+    return reviews
 
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k=10):
