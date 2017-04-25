@@ -3,7 +3,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 import pickle
 import boto3
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+try:
+  sid = SentimentIntensityAnalyzer()
+except:
+  nltk.download("vader_lexicon")
+  sid = SentimentIntensityAnalyzer()
 
 ta_listings = pickle.load(open("data/tripadvisor_hotel_info.pickle", 'rb'))
 airbnb_listings = pickle.load(open("data/airbnb_listings.pickle", 'rb'))
