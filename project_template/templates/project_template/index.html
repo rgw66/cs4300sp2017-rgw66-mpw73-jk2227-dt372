@@ -55,7 +55,12 @@
                     <span class="sentiments">
                         {{ best_result.score }}</span>
                     <br/>
+                    <p>{{ line.average_sent_score }}</p>
+                    <p>{{ line.min_sent_score }}</p>
+                    <p>{{ line.min_sent_review }}</p>
                     <br/>
+                    <p>{{ line.max_sent_score }}</p>
+                    <p>{{ line.max_sent_review }}</p>
                     <br/>
             </a>
             <h5>Other places you might be interested in:</h5>
@@ -70,7 +75,12 @@
                     <span class="sentiments">
                         {{ line.score }}</span>
                     <br/>
+                    <p>{{ line.average_sent_score }}</p>
+                    <p>{{ line.min_sent_score }}</p>
+                    <p>{{ line.min_sent_review }}</p>
                     <br/>
+                    <p>{{ line.max_sent_score }}</p>
+                    <p>{{ line.max_sent_review }}</p>
                     <br/>
                 </a>
             {% endfor %}
