@@ -131,6 +131,7 @@ def get_airbnb_results(query):
 
 def get_hotel_results(query):
     ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
+    hotel_images = pickle.load(open("data/hotel_images.pickle", "rb"))
     listings, indices, scores = search_lda(query,
                                            ta_vectorizer,
                                            ta_lda_ht,
@@ -143,11 +144,12 @@ def get_hotel_results(query):
         ordered_listings.append({
             'name': name,
             'listing_url': ta_listings[name][0],
-            'image_url': '/static/img/tripadvisor1600.png',
+            'image_url': hotel_images[name],
             'score': str(score)
         })
         # print (tripadvisor_name_to_review_index[name])
     del ta_vectorizer
+    del hotel_images
     return ordered_listings
 
 
