@@ -6,14 +6,6 @@ import boto3
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-from scipy.sparse.linalg import svds
-from sklearn.decomposition import NMF, LatentDirichletAllocation
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.manifold import TSNE
-from sklearn.preprocessing import normalize
-import numpy as np
-import pickle
-import matplotlib.pyplot as plt
 
 try:
   sid = SentimentIntensityAnalyzer()
