@@ -6,11 +6,21 @@ import boto3
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+from scipy.sparse.linalg import svds
+from sklearn.decomposition import NMF, LatentDirichletAllocation
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.manifold import TSNE
+from sklearn.preprocessing import normalize
+import numpy as np
+import pickle
+import matplotlib.pyplot as plt
+
 try:
   sid = SentimentIntensityAnalyzer()
 except:
   nltk.download("vader_lexicon")
   sid = SentimentIntensityAnalyzer()
+
 
 ta_listings = pickle.load(open("data/tripadvisor_hotel_info.pickle", 'rb'))
 airbnb_listings = pickle.load(open("data/airbnb_listings.pickle", 'rb'))
@@ -36,6 +46,7 @@ CLIENT = boto3.client('s3')
 
 tripadvisor_name_to_review_index = pickle.load(open("tripadvisor_name_to_review_index.pickle"))
 airbnb_name_to_review_index = pickle.load(open("airbnb_name_to_review_index.pickle"))
+
 
 def get_hotel_reviews(site, hotel_ind):
     indices = None
@@ -64,12 +75,7 @@ def get_reviews(site,ind_lst):
 
     reviews = []
 
-    print('\n\n\n')
-    print(f)
-    print('\n\n\n')
-
     for cluster in f:
-        print(cluster)
         ind = cluster[0]
         page_lower = ind/500 * 500 
         page_upper = page_lower + 499
@@ -87,6 +93,7 @@ def get_reviews(site,ind_lst):
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k=10):
     vec = vectorizer.transform([query]).todense().T
+
     results = np.dot(ht_mat, np.dot(tt_mat, vec)).T
     indices = np.squeeze(np.asarray(np.argsort(results)))[::-1].T[:top_k]
     scores = np.squeeze(np.asarray(np.sort(results)))[::-1].T[:top_k]
@@ -118,14 +125,14 @@ def get_airbnb_results(query):
             'image_url': airbnb_listing_info['picture_url'],
             'score': str(score)
         })
-        print (get_reviews('airbnb',airbnb_name_to_review_index[name]))
+        # print (get_reviews('airbnb',airbnb_name_to_review_index[name]))
     del airbnb_vectorizer
     
     # print (get_hotel_reviews('airbnb', listings))
     return ordered_listings
 
 def get_hotel_results(query):
-    ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", 'rb'))
+    ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
     listings, indices, scores = search_lda(query,
                                            ta_vectorizer,
                                            ta_lda_ht,
@@ -141,7 +148,7 @@ def get_hotel_results(query):
             'image_url': '/static/img/tripadvisor1600.png',
             'score': str(score)
         })
-        print (tripadvisor_name_to_review_index[name])
+        # print (tripadvisor_name_to_review_index[name])
     del ta_vectorizer
     return ordered_listings
 

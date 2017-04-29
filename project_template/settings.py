@@ -154,3 +154,5 @@ STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 # you run `collectstatic`).
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
+AWS_ACCESS_KEY_ID = 'AKIAIDPKGWQ5AKTBAPBA'
+AWS_SECRET_ACCESS_KEY = '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'
