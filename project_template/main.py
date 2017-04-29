@@ -36,8 +36,6 @@ airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
 ta_adj_mat = pickle.load(open("data/ta_adj_mat.pickle"))
 airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 
-AWS_ACCESS_KEY_ID = 'AKIAIDPKGWQ5AKTBAPBA'
-AWS_SECRET_ACCESS_KEY = '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'
 
 
 BUCKET_NAME = 'cs4300-dream-team'
