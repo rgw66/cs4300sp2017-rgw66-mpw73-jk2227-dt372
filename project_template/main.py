@@ -27,17 +27,8 @@ ta_adj_mat = pickle.load(open("data/ta_adj_mat.pickle"))
 airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 
 BUCKET_NAME = 'cs4300-dream-team'
-
-ACCESS_KEY = 'AKIAJ55CDKOUVGR3GE3Q'
-SECRET_KEY = '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'
-
-S3 = boto3.resource('s3',
-                    aws_access_key_id=ACCESS_KEY,
-                    aws_secret_access_key=SECRET_KEY)
-
-CLIENT = boto3.client('s3',
-                    aws_access_key_id=ACCESS_KEY,
-                    aws_secret_access_key=SECRET_KEY)
+S3 = boto3.resource('s3')
+CLIENT = boto3.client('s3')
 
 tripadvisor_name_to_review_index = pickle.load(open("tripadvisor_name_to_review_index.pickle"))
 airbnb_name_to_review_index = pickle.load(open("airbnb_name_to_review_index.pickle"))
