@@ -113,20 +113,39 @@ def get_airbnb_results(query):
         name = airbnb_listing_info['name'].strip()
         reviews = get_reviews('airbnb',airbnb_name_to_review_index[name])
         scores = [] 
+        scores2 = [] 
+        minScore = 10000
+        minReview = None
+        maxScore = -10000
+        maxReview = None
         for review in reviews:
-            score = 0.0 
-            for token in tokenizer.tokenize(review):
-                if token in airbnb_sentscores:
-                    score += airbnb_sentscores[token]
+            #score = 0.0 
+            #for token in tokenizer.tokenize(review):
+            #    if token in airbnb_sentscores:
+            #        score += airbnb_sentscores[token]
+            score = sid.polarity_scores(review)['compound']
+            if score < minScore:
+                minScore = score 
+                minReview = review 
+            if score > maxScore :
+                maxScore = score 
+                maxReview = review
             scores.append(score)
+            #scores2.append(sid.polarity_scores(review)['compound'])
         avg_sent = sum(scores) / float(len(scores))
-        print (avg_sent)
+        max_sent = max(scores)
+        min_sent = min(scores)
 
         ordered_listings.append({
             'name': name,
             'listing_url': airbnb_listing_info['listing_url'],
             'image_url': airbnb_listing_info['picture_url'],
-            'score': str(score)
+            'score': str(score), 
+            'min_sent_score': min_sent,
+            'min_sent_review': minReview,
+            'max_sent_score': max_sent,
+            'max_sent_review': maxReview,
+            'avg_sent_score': avg_sent 
         })
         # print (get_reviews('airbnb',airbnb_name_to_review_index[name]))
     del airbnb_vectorizer
@@ -146,11 +165,56 @@ def get_hotel_results(query):
 
     for (l, ind, score) in zip(listings, indices, scores):
         name = ta_index_to_listing[int(l)]
+        #print (tripadvisor_name_to_review_index[name])
+        reviews = get_reviews('ta', tripadvisor_name_to_review_index[name])
+        scores = [] 
+        scores2 = [] 
+        minScore = 10000
+        minReview = None
+        maxScore = -10000
+        maxReview = None
+        for review in reviews:
+            #score = 0.0 
+            #for token in tokenizer.tokenize(review):
+            #    if token in airbnb_sentscores:
+            #        score += airbnb_sentscores[token]
+            score = sid.polarity_scores(review)['compound']
+            if score < minScore:
+                minScore = score 
+                minReview = review 
+            if score > maxScore :
+                maxScore = score 
+                maxReview = review
+            scores.append(score)
+            #scores2.append(sid.polarity_scores(review)['compound'])
+        avg_sent = sum(scores) / float(len(scores))
+        #avg_sent2 = sum(scores2) / float(len(scores2))
+        #print ("Avg sent: %f"  % avg_sent)
+        #print ("Sid avg sent: %f " % avg_sent2)
+        max_sent = max(scores)
+        #max_sent2 = max(scores2)
+        print ("Max sent: %f"  % max_sent)
+        print ("Max sent a: %f"  % maxScore)
+        print ("Max score review ")
+        print (maxReview)
+        #print ("Max sent2: %f " % max_sent2)
+        min_sent = min(scores)
+        #min_sent2 = min(scores2)
+        print ("Min sent: %f"  % min_sent)
+        print ("Min sent a: %f" % minScore)
+        print ("Min score review ")
+        print (minReview)
+        #print ("Min sent2: %f " % min_sent2)
         ordered_listings.append({
             'name': name,
             'listing_url': ta_listings[name][0],
             'image_url': hotel_images[name],
-            'score': str(score)
+            'score': str(score),
+            'min_sent_score': min_sent,
+            'min_sent_review': minReview,
+            'max_sent_score': max_sent,
+            'max_sent_review': maxReview,
+            'avg_sent_score': avg_sent
         })
         # print (tripadvisor_name_to_review_index[name])
     del ta_vectorizer
