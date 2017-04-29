@@ -39,6 +39,9 @@ CLIENT = boto3.client('s3',
                     aws_access_key_id=ACCESS_KEY,
                     aws_secret_access_key=SECRET_KEY)
 
+tripadvisor_name_to_review_index = pickle.load(open("tripadvisor_name_to_review_index.pickle"))
+airbnb_name_to_review_index = pickle.load(open("airbnb_name_to_review_index.pickle"))
+
 def get_hotel_reviews(site, hotel_ind):
     indices = None
     if (site == 'airbnb'):
@@ -115,9 +118,10 @@ def get_airbnb_results(query):
             'image_url': airbnb_listing_info['picture_url'],
             'score': str(score)
         })
+        print (airbnb_name_to_review_index[airbnb_listing_info['name']])
     del airbnb_vectorizer
     
-    print (get_hotel_reviews('airbnb', listings))
+    # print (get_hotel_reviews('airbnb', listings))
     return ordered_listings
 
 def get_hotel_results(query):
@@ -137,6 +141,7 @@ def get_hotel_results(query):
             'image_url': '/static/img/tripadvisor1600.png',
             'score': str(score)
         })
+        print (tripadvisor_name_to_review_index[name])
     del ta_vectorizer
     return ordered_listings
 
