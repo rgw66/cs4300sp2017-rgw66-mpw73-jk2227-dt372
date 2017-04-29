@@ -5,6 +5,7 @@ import pickle
 import boto3
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from nltk.tokenize import TreebankWordTokenizer
 
 
 try:
@@ -13,6 +14,7 @@ except:
   nltk.download("vader_lexicon")
   sid = SentimentIntensityAnalyzer()
 
+tokenizer = TreebankWordTokenizer()
 
 ta_listings = pickle.load(open("data/tripadvisor_hotel_info.pickle", 'rb'))
 airbnb_listings = pickle.load(open("data/airbnb_listings.pickle", 'rb'))
@@ -28,7 +30,7 @@ airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
 ta_adj_mat = pickle.load(open("data/ta_adj_mat.pickle"))
 airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 
-
+airbnb_sentscores = pickle.load(open("airbnb_sentscores.pickle"))    
 
 BUCKET_NAME = 'cs4300-dream-team'
 S3 = boto3.resource('s3')
@@ -109,6 +111,17 @@ def get_airbnb_results(query):
         listing_id = str(int(l))
         airbnb_listing_info = airbnb_listings[listing_id]
         name = airbnb_listing_info['name'].strip()
+        reviews = get_reviews('airbnb',airbnb_name_to_review_index[name])
+        scores = [] 
+        for review in reviews:
+            score = 0.0 
+            for token in tokenizer.tokenize(review):
+                if token in airbnb_sentscores:
+                    score += airbnb_sentscores[token]
+            scores.append(score)
+        avg_sent = sum(scores) / float(len(scores))
+        print (avg_sent)
+
         ordered_listings.append({
             'name': name,
             'listing_url': airbnb_listing_info['listing_url'],
