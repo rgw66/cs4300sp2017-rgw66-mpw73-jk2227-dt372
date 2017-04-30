@@ -1,5 +1,6 @@
 from __future__ import print_function
 from scipy import sparse
+from sklearn.preprocessing import normalize
 import numpy as np
 import pickle
 import boto3
@@ -21,6 +22,13 @@ airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 airbnb_sentscores = pickle.load(open("airbnb_sentscores.pickle"))    
 ta_sentscores = pickle.load(open("tripadvisor_sentscores.pickle")) 
 
+total_svd_s = pickle.load(open("data/total_svd_s.pickle"))
+total_svd_tt = pickle.load(open("data/total_svd_tt.pickle"))
+
+total_vectorizer = pickle.load(open("data/total_vectorizer.pickle"))
+word_to_index = total_vectorizer.vocabulary_
+index_to_word = {i:t for t,i in word_to_index.iteritems()}
+
 BUCKET_NAME = 'cs4300-dream-team'
 S3 = boto3.resource('s3')
 CLIENT = boto3.client('s3')
@@ -28,6 +36,11 @@ CLIENT = boto3.client('s3')
 tripadvisor_name_to_review_index = pickle.load(open("tripadvisor_name_to_review_index.pickle"))
 airbnb_name_to_review_index = pickle.load(open("airbnb_name_to_review_index.pickle"))
 
+def closest_words(word_in, total_svd_s, total_svd_tt, k = 5):
+    if word_in not in word_to_index: return []
+    sims = np.matmul(total_svd_tt.T, np.multiply(total_svd_s, total_svd_tt[:, word_to_index[word_in]]))
+    asort = np.argsort(-sims)[:k+1]
+    return [(index_to_word[i],sims[i]/sims[asort[0]]) for i in asort[1:]]
 
 def get_hotel_reviews(site, hotel_ind):
     indices = None
@@ -76,16 +89,17 @@ def get_reviews(site,ind_lst):
     return unscrambled_reviews #reviews
 
 
-def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k=10):
-    vec = vectorizer.transform([query]).todense().T
-
-    results = np.dot(ht_mat, np.dot(tt_mat, vec)).T
+def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k = 10):
+    query_updated = []
+    for q in query.split():
+        query_updated += [q]
+        query_updated += [w[0] for w in closest_words(q, total_svd_s, total_svd_tt)]
+    query_updated = " ".join(query_updated)
+    print(query_updated)
+    vec = vectorizer.transform([query_updated]).todense().T
+    results = np.dot(ht_mat, normalize(np.dot(tt_mat, vec), axis = 0)).T
     indices = np.squeeze(np.asarray(np.argsort(results)))[::-1].T[:top_k]
-    scores = np.squeeze(np.asarray(np.sort(results)))[::-1].T[:top_k]
-
-    explanation = np.squeeze(np.asarray(np.multiply(np.dot(ht_mat, tt_mat), vec.T)[indices, :]))
-    #     print_top_words(explanation, airbnb_tfidf_feature_names, 10)
-
+    scores = np.squeeze(np.asarray(np.sort(results)))[::-1].T[:top_k]    
     listings = np.zeros(indices.shape)
     for i in range(indices.shape[0]):
         listings[i] = mat_to_listing_dict[indices[i]]
