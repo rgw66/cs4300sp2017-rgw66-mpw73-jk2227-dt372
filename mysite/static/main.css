@@ -9,10 +9,12 @@
         text-align:center;
     }
     body {
-        padding-top: 5%;
-        padding-bottom: 15px;
+        /*padding-top: 5%;*/
+        /*padding-bottom: 15px;*/
         text-align: center;
         "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background-image: url("img/9qzBIpf.jpg");
+        background-attachment: fixed;
     }
     .global-search {
         text-align:center;
@@ -26,10 +28,16 @@
         margin-bottom:0;
     }
 }
+.main{
+    width: 80%;
+    opacity: .95;
+    background-color: white;
+    margin: auto;
+}
 .topcorner{
-    position:absolute;
-    top:2%;
-    right:2%;
+    position:relative;
+    text-align: center;
+    width: 100%;
 }
 .btn{
     background-color: #4285F4;
@@ -85,6 +93,7 @@ color: #4285F4;
     display: inline-block;
 }
 .tile {
+    background-color: white;
     color: #484848;
     text-align: right;
     display: inline-block;
@@ -92,16 +101,9 @@ color: #4285F4;
     width: 100%;
     height: 200px;
     border: 1px solid black;
-    border-radius: 15px;
+    border-radius: 10px;
     margin: 2px;
     overflow: hidden;
-}
-.imgWrap{
-    height: 200px;
-    width: 200px;
-    float: left;
-    overflow: hidden;
-
 }
 .tile_icon {
     width: auto;
@@ -113,4 +115,16 @@ color: #4285F4;
     background-color: rgba(66, 133, 244, 0.22);
     text-decoration: none;
     cursor: pointer;
+}
+.imgWrap{
+    height: 200px;
+    width: 200px;
+    float: left;
+    overflow: hidden;
+
+}
+
+.check_label{
+    padding: 10px;
+    padding-left: 0;
 }

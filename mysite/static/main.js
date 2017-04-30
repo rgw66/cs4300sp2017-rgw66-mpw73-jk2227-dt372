@@ -81,6 +81,22 @@ var show_words = function(e){
     $("#main_page").delay(200).slideDown(300);
 };
 
+var change_list = function(e){
+    if (e.target.value == "hotel"){
+        $("#airbnb_output").fadeOut(200);
+        $("#total_output").fadeOut(200);
+        $("#hotel_output").delay(300).fadeIn(200);
+    }else if (e.target.value == "airbnb"){
+        $("#airbnb_output").delay(300).fadeIn(200);
+        $("#total_output").fadeOut(200);
+        $("#hotel_output").fadeOut(200);
+    }else{
+        $("#airbnb_output").fadeOut(200);
+        $("#total_output").delay(300).fadeIn(200);
+        $("#hotel_output").fadeOut(200);
+    }
+};
+
 $(document).ready(function(){
     d3.selectAll('.sentiments').each(function(){
         console.log(parseInt(this.innerHTML));
