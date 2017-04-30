@@ -5,6 +5,7 @@ from .models import Docs
 from django.template import loader
 from .form import QueryForm
 from main import get_airbnb_results, get_hotel_results
+from django.http import JsonResponse
 import json
 # from .test import get_hotel_results, get_hotel_tuples, get_airbnb_tuples, get_airbnb_results
 # from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -16,7 +17,6 @@ def index(request):
     hotel_output = []
     best_result = {}
     query = ''
-
     if request.GET.get('search'):
         query = request.GET.get('search')
         airbnb_output = get_airbnb_results(query)
@@ -47,3 +47,9 @@ def index(request):
                            'magic_url': request.get_full_path(),
                            'words': words,
                            })
+
+def refine(request):
+    hotel_words = ['clean', 'clean', 'clean']
+    airbnb_words= ['nice', 'nice', 'nice']
+    return JsonResponse({"hotel_words":hotel_words,
+                         "airbnb_words":airbnb_words})

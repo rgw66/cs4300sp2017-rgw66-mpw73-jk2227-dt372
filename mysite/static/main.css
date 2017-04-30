@@ -50,6 +50,15 @@ color: #4285F4;
     width: 600px;
     margin: auto;
 }
+.refine_word_cloud{
+    border: 1px solid black;
+    border-radius: 2px;
+    width: 200px;
+}
+.refine_word_cloud:hover{
+    background-color: #d8d8d8;
+    cursor: pointer;
+}
 .wc_word {
     padding: 10px;
 }
@@ -63,6 +72,9 @@ color: #4285F4;
 }
 .wc_selected:hover {
     cursor: pointer;
+}
+.refine{
+    padding:10px
 }
 
 /*airbnb and hotel tile styling*/

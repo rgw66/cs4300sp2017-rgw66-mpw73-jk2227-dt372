@@ -32,65 +32,81 @@
         {% else %}
         <div style="display: none" id="main_page">
         {% endif %}
-            <form class="form-inline global-search" method='GET' id="wc_form">
-                <div class="word_cloud">
-                {% for  word in words %}
-                    <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
-                {% endfor %}
-                <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">
-                </div>
-            </form>
-            <div class="submit_button" id="submit_button">
-                <button class="btn btn-info" onclick="submit_form()"> Go! </button>
-            </div>
-            <br/>
-            {% if airbnb_output or hotel_output %}
-            <h4>Best results For:</h4>
-            <p>{{ search }}</p><br/>
-            <a href="{{ best_result.listing_url }}" class="tile" target="_blank">
-                    <img src="{{ best_result.image_url }}" class="tile_icon">
-                    <br/>
-                    <b>{{ best_result.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ best_result.score }}</span>
-                    <br/>
-                    <br/>
-                    <br/>
-            </a>
-            <h5>Other places you might be interested in:</h5>
-            <div class="output">
-                <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
-            {% for line in hotel_output %}
-                <a href="{{ line.listing_url }}" class="tile" target="_blank">
-                    <img src="{{ line.image_url }}" class="tile_icon">
-                    <br/>
-                    <b>{{ line.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ line.score }}</span>
-                    <br/>
-                    <br/>
-                    <br/>
-                </a>
+        <form class="form-inline global-search" method='GET' id="wc_form">
+            <div class="word_cloud">
+            {% for  word in words %}
+                <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
             {% endfor %}
             </div>
-            <div class="output">
-                <h3><font color="#ff5a5f">Airbnb</font></h3>
-                {% for line in airbnb_output %}
-                <a href="{{ line.listing_url }}" class="tile" target="_blank">
-                    <img src="{{ line.image_url }}" class="tile_icon">
-                    <br/>
-                    <b>{{ line.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ line.score }}</span>
-                    <br/>
-                    <br/>
-                    <br/>
-                </a>
-                {% endfor %}
+            <div id="refine_form" style='display:none;'>
+                <br/>
+                <h5>Refine Your Search</h5>
+                <br/>
+                <p>Select a box that is best for you</p>
+                <br/>
+                <div class="refine_word_cloud" id="hotel_refine" onclick="submit_form(event)">
+                </div>
+                <div class="refine_word_cloud" id="airbnb_refine" onclick="submit_form(event)">
+                </div>
+{#            <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">#}
             </div>
+        <br/>
+        <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input">
+        </form>
+
+        <div class="submit_button" id="submit_button">
+            <button class="btn btn-info" onclick="refine_words()"> Go! </button>
+        </div>
+        <br/>
+        {% if airbnb_output or hotel_output %}
+        <h4>Best result:</h4>
+{#        <p>{{ search }}</p><br/>#}
+        <a href="{{ best_result.listing_url }}" class="tile" target="_blank">
+                <img src="{{ best_result.image_url }}" class="tile_icon">
+                <br/>
+                <b>{{ best_result.name }}</b><br/>
+                Similarity Score:
+                <span class="sentiments">
+                    {{ best_result.score }}</span>
+                <br/>
+                <br/>
+                <br/>
+        </a>
+        <br/>
+            <br/>
+        <h5>Other places you might be interested in:</h5>
+        <div class="output">
+            <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
+        {% for line in hotel_output %}
+            <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                <img src="{{ line.image_url }}" class="tile_icon">
+                <br/>
+                <b>{{ line.name }}</b><br/>
+                Similarity Score:
+                <span class="sentiments">
+                    {{ line.score }}</span>
+                <br/>
+                <br/>
+                <br/>
+            </a>
+        {% endfor %}
+        </div>
+        <div class="output">
+            <h3><font color="#ff5a5f">Airbnb</font></h3>
+            {% for line in airbnb_output %}
+            <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                <img src="{{ line.image_url }}" class="tile_icon">
+                <br/>
+                <b>{{ line.name }}</b><br/>
+                Similarity Score:
+                <span class="sentiments">
+                    {{ line.score }}</span>
+                <br/>
+                <br/>
+                <br/>
+            </a>
+            {% endfor %}
+        </div>
 
 {#            <div class="pagination">#}
 {#                <span class="step-links">#}
