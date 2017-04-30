@@ -55,14 +55,13 @@
             <br/>
             <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input">
             </form>
-
             <div class="submit_button" id="submit_button">
                 <button class="btn btn-info" onclick="refine_words()"> Go! </button>
             </div>
             <br/>
             {% if airbnb_output or hotel_output %}
-            <h4>Best result:</h4>
-    {#        <p>{{ search }}</p><br/>#}
+            <h4>Winner:</h4>
+            <p>{{ search }}</p><br/>
             <a href="{{ best_result.listing_url }}" class="tile" target="_blank">
                     <div class="imgWrap">
                         <img src="{{ best_result.image_url }}" class="tile_icon">
@@ -73,7 +72,12 @@
                     <span class="sentiments">
                         {{ best_result.score }}</span>
                     <br/>
+                    <p>{{ line.average_sent_score }}</p>
+                    <p>{{ line.min_sent_score }}</p>
+                    <p style="font-size: 3px">{{ line.min_sent_review }}</p>
                     <br/>
+                    <p>{{ line.max_sent_score }}</p>
+                    <p>{{ line.max_sent_review }}</p>
                     <br/>
             </a>
             <br/>
@@ -101,7 +105,16 @@
                     <span class="sentiments">
                         {{ line.score }}</span>
                     <br/>
-                    <br/>
+
+                    <p>{{ line.average_sent_score }}
+                    <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>
+                    <br>
+                    {{ line.max_sent_review }}
+                    <br>
+                    <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>
+                    <br>
+                    {{ line.min_sent_review }}</p>
+
                     <br/>
                 </a>
             {% endfor %}
@@ -137,10 +150,20 @@
                     <span class="sentiments">
                         {{ line.score }}</span>
                     <br/>
-                    <br/>
+
+                    <p>{{ line.average_sent_score }}
+                    <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>
+                    <br>
+                    {{ line.max_sent_review }}
+                    <br>
+                    <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>
+                    <br>
+                    {{ line.min_sent_review }}</p>
+
                     <br/>
                 </a>
                 {% endfor %}
+
             </div>
 
     {#            <div class="pagination">#}

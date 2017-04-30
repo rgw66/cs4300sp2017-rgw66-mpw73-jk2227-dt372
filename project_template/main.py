@@ -3,24 +3,6 @@ from scipy import sparse
 import numpy as np
 import pickle
 import boto3
-import nltk
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-
-from scipy.sparse.linalg import svds
-from sklearn.decomposition import NMF, LatentDirichletAllocation
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.manifold import TSNE
-from sklearn.preprocessing import normalize
-import numpy as np
-import pickle
-import matplotlib.pyplot as plt
-
-try:
-  sid = SentimentIntensityAnalyzer()
-except:
-  nltk.download("vader_lexicon")
-  sid = SentimentIntensityAnalyzer()
-
 
 ta_listings = pickle.load(open("data/tripadvisor_hotel_info.pickle", 'rb'))
 airbnb_listings = pickle.load(open("data/airbnb_listings.pickle", 'rb'))
@@ -36,7 +18,8 @@ airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
 ta_adj_mat = pickle.load(open("data/ta_adj_mat.pickle"))
 airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 
-
+airbnb_sentscores = pickle.load(open("airbnb_sentscores.pickle"))    
+ta_sentscores = pickle.load(open("tripadvisor_sentscores.pickle")) 
 
 BUCKET_NAME = 'cs4300-dream-team'
 S3 = boto3.resource('s3')
@@ -59,7 +42,7 @@ def get_reviews(site,ind_lst):
     # site = "airbnb" or "ta" 
     sorted_lst = sorted(ind_lst)
     f = [] 
-    low = (ind_lst[0]/500) + 1
+    low = (sorted_lst[0]/500) + 1
     tempBucket = []
     for elem in sorted_lst: 
         if elem < low * 500:
@@ -69,7 +52,6 @@ def get_reviews(site,ind_lst):
             f.append(tempBucket)
             tempBucket = [elem]
     f.append(tempBucket)
-
 
     reviews = []
 
@@ -86,7 +68,12 @@ def get_reviews(site,ind_lst):
             ind_in_page = ind % 500
             reviews.append(lst[ind_in_page])
 
-    return reviews
+    unscramble = {} 
+    for (idx, review) in zip(sorted_lst, reviews):
+        unscramble[idx] = review 
+
+    unscrambled_reviews = [unscramble[i] for i in ind_lst]
+    return unscrambled_reviews #reviews
 
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k=10):
@@ -113,20 +100,44 @@ def get_airbnb_results(query):
                                            airbnb_lda_tt,
                                            airbnb_mat_index_to_listing)
     ordered_listings = []
+    min_max_indices = [] 
     for (l, ind, score) in zip(listings, indices, scores):
         listing_id = str(int(l))
         airbnb_listing_info = airbnb_listings[listing_id]
         name = airbnb_listing_info['name'].strip()
+        indices_per_listing = airbnb_name_to_review_index[name]
+        sent_scores_index_pairs = [(airbnb_sentscores[i], i) for i in indices_per_listing]
+        sorted_sent_scores_index_pairs = sorted(sent_scores_index_pairs, key=lambda x : x[0])
+        min_sent, min_review_index = sorted_sent_scores_index_pairs[0]
+        max_sent, max_review_index = sorted_sent_scores_index_pairs[-1]
+        
+        min_max_indices.append(min_review_index) 
+        min_max_indices.append(max_review_index)
+        sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
+        avg_sent = np.average(sent_scores)
+
         ordered_listings.append({
             'name': name,
             'listing_url': airbnb_listing_info['listing_url'],
             'image_url': airbnb_listing_info['picture_url'],
-            'score': str(score)
+            'score': str(score), 
+            'min_sent_score': min_sent,
+            'min_sent_review': "", 
+            'max_sent_score': max_sent,
+            'max_sent_review': "", 
+            'avg_sent_score': avg_sent, 
+            'sent_scores': sent_scores
         })
-        # print (get_reviews('airbnb',airbnb_name_to_review_index[name]))
+
+    reviews = get_reviews('airbnb', min_max_indices)
+    for i, review in enumerate(reviews):
+        if i % 2 == 0: 
+            ordered_listings[i/2]['min_sent_review'] = review 
+        else:
+            ordered_listings[i/2]['max_sent_review'] = review 
+
     del airbnb_vectorizer
     
-    # print (get_hotel_reviews('airbnb', listings))
     return ordered_listings
 
 def get_hotel_results(query):
@@ -138,18 +149,44 @@ def get_hotel_results(query):
                                            ta_lda_tt,
                                            ta_mat_index_to_listing)
     ordered_listings = []
+    min_max_indices = [] 
 
     for (l, ind, score) in zip(listings, indices, scores):
         name = ta_index_to_listing[int(l)]
+        indices_per_listing = tripadvisor_name_to_review_index[name]
+        sent_scores_index_pairs = [(ta_sentscores[i], i) for i in indices_per_listing]
+        sorted_sent_scores_index_pairs = sorted(sent_scores_index_pairs, key=lambda x : x[0])
+        min_sent, min_review_index = sorted_sent_scores_index_pairs[0]
+        max_sent, max_review_index = sorted_sent_scores_index_pairs[-1]
+        
+        min_max_indices.append(min_review_index) 
+        min_max_indices.append(max_review_index)
+
+        sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
+
+        avg_sent = np.average(sent_scores)
         ordered_listings.append({
             'name': name,
             'listing_url': ta_listings[name][0],
             'image_url': hotel_images[name],
-            'score': str(score)
+            'score': str(score),
+            'min_sent_score': min_sent,
+            'min_sent_review': "", # min_review,
+            'max_sent_score': max_sent,
+            'max_sent_review': "", # max_review,
+            'avg_sent_score': avg_sent,
+            'sent_scores': sent_scores
         })
-        # print (tripadvisor_name_to_review_index[name])
+
     del ta_vectorizer
     del hotel_images
+    reviews = get_reviews('ta', min_max_indices)
+    for i, review in enumerate(reviews):
+        if i % 2 == 0: 
+            ordered_listings[i/2]['min_sent_review'] = review 
+        else:
+            ordered_listings[i/2]['max_sent_review'] = review 
+
     return ordered_listings
 
 
