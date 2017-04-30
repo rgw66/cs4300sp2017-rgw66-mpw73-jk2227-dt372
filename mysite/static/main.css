@@ -77,7 +77,7 @@ color: #4285F4;
 
 .tile {
     color: #484848;
-    text-align: right;
+    text-align: justify;
     display: inline-block;
     max-width: 600px;
     width: 100%;
@@ -95,15 +95,4 @@ color: #4285F4;
     background-color: rgba(66, 133, 244, 0.22);
     text-decoration: none;
     cursor: pointer;
-}
-
-.reviews{
-    background-color: pink;
-    overflow: scroll;
-    padding-right: 10px;
-}
-
-.good{
-    text-align: left;
-    font-size: 16px;
 }

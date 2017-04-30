@@ -78,10 +78,12 @@
                     <div class="reviews">
                         <p>{{ line.average_sent_score }}</p>
                         <p class="good">The Good</p>
-                        <p>Worst Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id felis bibendum nisl sodales tempus. Donec vulputate arcu ut ex interdum, consectetur pharetra purus tempor. Cras vitae ullamcorper libero. Vestibulum rhoncus odio vitae vulputate vehicula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur bibendum tincidunt porttitor. Vestibulum at lobortis ligula. Maecenas fringilla ut mi eu pretium. Pellentesque eleifend, diam eu consectetur cursus, odio nulla imperdiet augue, ac dapibus lectus lectus eu lacus. Pellentesque ac mauris nec tortor scelerisque mattis ac sit amet elit. Praesent at magna et dolor posuere facilisis eu ac quam. Vestibulum dui est, porttitor posuere ornare a, pulvinar in urna. Proin id sem magna. Praesent sit amet dolor in eros sollicitudin vestibulum sed nec diam.
+                        <p> {{ line.max_sent_score }}</p>
+                        <p> {{ line.max_sent_review }}</p>
                         <br/>
                         <p class="good">The Bad</p>
-                        <p>Best Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id felis bibendum nisl sodales tempus. Donec vulputate arcu ut ex interdum, consectetur pharetra purus tempor. Cras vitae ullamcorper libero. Vestibulum rhoncus odio vitae vulputate vehicula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur bibendum tincidunt porttitor. Vestibulum at lobortis ligula. Maecenas fringilla ut mi eu pretium. Pellentesque eleifend, diam eu consectetur cursus, odio nulla imperdiet augue, ac dapibus lectus lectus eu lacus. Pellentesque ac mauris nec tortor scelerisque mattis ac sit amet elit. Praesent at magna et dolor posuere facilisis eu ac quam. Vestibulum dui est, porttitor posuere ornare a, pulvinar in urna. Proin id sem magna. Praesent sit amet dolor in eros sollicitudin vestibulum sed nec diam.
+                        <p> {{ line.min_sent_score }}</p>
+                        <p> {{ line.min_sent_review }}</p>
                     </div>
                     <br/>
                 </a>
@@ -98,14 +100,16 @@
                     <span class="sentiments">
                         {{ line.score }}</span>
                     <br/>
-                    <div class="reviews">
-                        <p>{{ line.average_sent_score }}</p>
-                        <p class="good">The Good</p>
-                        <p>Worst Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id felis bibendum nisl sodales tempus. Donec vulputate arcu ut ex interdum, consectetur pharetra purus tempor. Cras vitae ullamcorper libero. Vestibulum rhoncus odio vitae vulputate vehicula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur bibendum tincidunt porttitor. Vestibulum at lobortis ligula. Maecenas fringilla ut mi eu pretium. Pellentesque eleifend, diam eu consectetur cursus, odio nulla imperdiet augue, ac dapibus lectus lectus eu lacus. Pellentesque ac mauris nec tortor scelerisque mattis ac sit amet elit. Praesent at magna et dolor posuere facilisis eu ac quam. Vestibulum dui est, porttitor posuere ornare a, pulvinar in urna. Proin id sem magna. Praesent sit amet dolor in eros sollicitudin vestibulum sed nec diam.</p>
-                        <br/>
-                        <p class="good">The Bad</p>
-                        <p>Best Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id felis bibendum nisl sodales tempus. Donec vulputate arcu ut ex interdum, consectetur pharetra purus tempor. Cras vitae ullamcorper libero. Vestibulum rhoncus odio vitae vulputate vehicula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur bibendum tincidunt porttitor. Vestibulum at lobortis ligula. Maecenas fringilla ut mi eu pretium. Pellentesque eleifend, diam eu consectetur cursus, odio nulla imperdiet augue, ac dapibus lectus lectus eu lacus. Pellentesque ac mauris nec tortor scelerisque mattis ac sit amet elit. Praesent at magna et dolor posuere facilisis eu ac quam. Vestibulum dui est, porttitor posuere ornare a, pulvinar in urna. Proin id sem magna. Praesent sit amet dolor in eros sollicitudin vestibulum sed nec diam.
-                    </div>
+                   
+                    <p>{{ line.average_sent_score }}
+                    <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>
+                    <br>
+                    {{ line.max_sent_review }}
+                    <br>
+                    <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>
+                    <br>
+                    {{ line.min_sent_review }}</p>
+     
                     <br/>
                 </a>
                 {% endfor %}
