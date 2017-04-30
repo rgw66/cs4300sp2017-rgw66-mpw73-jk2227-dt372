@@ -68,9 +68,11 @@ color: #4285F4;
 /*airbnb and hotel tile styling*/
 .output {
     text-align: center;
-    width: 48%;
+    width: 50%;
     margin: auto;
     display: inline-block;
+    vertical-align: top;
+    float: left;
 }
 
 
@@ -95,7 +97,7 @@ color: #4285F4;
     margin: 6px;
 }
 .tile:hover{
-    background-color: rgba(66, 133, 244, 0.22);
+    background-color: rgba(66, 133, 244, 0.1);
     text-decoration: none;
     cursor: pointer;
 }
