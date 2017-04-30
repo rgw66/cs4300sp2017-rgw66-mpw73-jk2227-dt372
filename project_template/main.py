@@ -113,7 +113,8 @@ def get_airbnb_results(query):
         
         min_max_indices.append(min_review_index) 
         min_max_indices.append(max_review_index)
-        avg_sent = np.average([sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs])
+        sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
+        avg_sent = np.average(sent_scores)
 
         ordered_listings.append({
             'name': name,
@@ -121,10 +122,11 @@ def get_airbnb_results(query):
             'image_url': airbnb_listing_info['picture_url'],
             'score': str(score), 
             'min_sent_score': min_sent,
-            'min_sent_review': "", #min_review,
+            'min_sent_review': "", 
             'max_sent_score': max_sent,
-            'max_sent_review': "", #max_review,
-            'avg_sent_score': avg_sent 
+            'max_sent_review': "", 
+            'avg_sent_score': avg_sent, 
+            'sent_scores': sent_scores
         })
 
     reviews = get_reviews('airbnb', min_max_indices)
@@ -160,7 +162,9 @@ def get_hotel_results(query):
         min_max_indices.append(min_review_index) 
         min_max_indices.append(max_review_index)
 
-        avg_sent = np.average([sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs])
+        sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
+
+        avg_sent = np.average(sent_scores)
         ordered_listings.append({
             'name': name,
             'listing_url': ta_listings[name][0],
@@ -170,7 +174,8 @@ def get_hotel_results(query):
             'min_sent_review': "", # min_review,
             'max_sent_score': max_sent,
             'max_sent_review': "", # max_review,
-            'avg_sent_score': avg_sent
+            'avg_sent_score': avg_sent,
+            'sent_scores': sent_scores
         })
 
     del ta_vectorizer
