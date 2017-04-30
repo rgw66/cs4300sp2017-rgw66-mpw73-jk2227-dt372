@@ -69,7 +69,12 @@ def get_reviews(site,ind_lst):
             ind_in_page = ind % 500
             reviews.append(lst[ind_in_page])
 
-    return reviews
+    unscramble = {} 
+    for (idx, review) in zip(sorted_lst, reviews):
+        unscramble[idx] = review 
+
+    unscrambled_reviews = [unscramble[i] for i in ind_lst]
+    return unscrambled_reviews #reviews
 
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k=10):
@@ -109,10 +114,6 @@ def get_airbnb_results(query):
 
         min_max_indices.append(min_review_index) 
         min_max_indices.append(max_review_index)
-        #reviews = get_reviews('airbnb', [min_review_index, max_review_index])
-
-        #min_review = reviews[0]
-        #max_review = reviews[1]
         avg_sent = np.average([sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs])
 
         ordered_listings.append({
@@ -159,9 +160,6 @@ def get_hotel_results(query):
         min_max_indices.append(min_review_index) 
         min_max_indices.append(max_review_index)
 
-        #reviews = get_reviews('ta', [min_review_index, max_review_index])
-        #min_review = reviews[0]
-        #max_review = reviews[1]
         avg_sent = np.average([sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs])
         ordered_listings.append({
             'name': name,
@@ -179,13 +177,12 @@ def get_hotel_results(query):
     del hotel_images
     reviews = get_reviews('ta', min_max_indices)
     for i, review in enumerate(reviews):
+        print (i)
         if i % 2 == 0: 
             ordered_listings[i/2]['min_sent_review'] = review 
         else:
             ordered_listings[i/2]['max_sent_review'] = review 
 
-
-    
     return ordered_listings
 
 
