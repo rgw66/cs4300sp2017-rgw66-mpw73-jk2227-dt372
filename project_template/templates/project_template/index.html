@@ -57,7 +57,7 @@
                     <br/>
                     <p>{{ line.average_sent_score }}</p>
                     <p>{{ line.min_sent_score }}</p>
-                    <p>{{ line.min_sent_review }}</p>
+                    <p style="font-size: 3px">{{ line.min_sent_review }}</p>
                     <br/>
                     <p>{{ line.max_sent_score }}</p>
                     <p>{{ line.max_sent_review }}</p>
@@ -75,12 +75,14 @@
                     <span class="sentiments">
                         {{ line.score }}</span>
                     <br/>
-                    <p>{{ line.average_sent_score }}</p>
-                    <p>{{ line.min_sent_score }}</p>
-                    <p>{{ line.min_sent_review }}</p>
-                    <br/>
-                    <p>{{ line.max_sent_score }}</p>
-                    <p>{{ line.max_sent_review }}</p>
+                    <div class="reviews">
+                        <p>{{ line.average_sent_score }}</p>
+                        <p class="good">The Good</p>
+                        <p>Worst Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id felis bibendum nisl sodales tempus. Donec vulputate arcu ut ex interdum, consectetur pharetra purus tempor. Cras vitae ullamcorper libero. Vestibulum rhoncus odio vitae vulputate vehicula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur bibendum tincidunt porttitor. Vestibulum at lobortis ligula. Maecenas fringilla ut mi eu pretium. Pellentesque eleifend, diam eu consectetur cursus, odio nulla imperdiet augue, ac dapibus lectus lectus eu lacus. Pellentesque ac mauris nec tortor scelerisque mattis ac sit amet elit. Praesent at magna et dolor posuere facilisis eu ac quam. Vestibulum dui est, porttitor posuere ornare a, pulvinar in urna. Proin id sem magna. Praesent sit amet dolor in eros sollicitudin vestibulum sed nec diam.
+                        <br/>
+                        <p class="good">The Bad</p>
+                        <p>Best Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id felis bibendum nisl sodales tempus. Donec vulputate arcu ut ex interdum, consectetur pharetra purus tempor. Cras vitae ullamcorper libero. Vestibulum rhoncus odio vitae vulputate vehicula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur bibendum tincidunt porttitor. Vestibulum at lobortis ligula. Maecenas fringilla ut mi eu pretium. Pellentesque eleifend, diam eu consectetur cursus, odio nulla imperdiet augue, ac dapibus lectus lectus eu lacus. Pellentesque ac mauris nec tortor scelerisque mattis ac sit amet elit. Praesent at magna et dolor posuere facilisis eu ac quam. Vestibulum dui est, porttitor posuere ornare a, pulvinar in urna. Proin id sem magna. Praesent sit amet dolor in eros sollicitudin vestibulum sed nec diam.
+                    </div>
                     <br/>
                 </a>
             {% endfor %}
@@ -96,7 +98,14 @@
                     <span class="sentiments">
                         {{ line.score }}</span>
                     <br/>
-                    <br/>
+                    <div class="reviews">
+                        <p>{{ line.average_sent_score }}</p>
+                        <p class="good">The Good</p>
+                        <p>Worst Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id felis bibendum nisl sodales tempus. Donec vulputate arcu ut ex interdum, consectetur pharetra purus tempor. Cras vitae ullamcorper libero. Vestibulum rhoncus odio vitae vulputate vehicula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur bibendum tincidunt porttitor. Vestibulum at lobortis ligula. Maecenas fringilla ut mi eu pretium. Pellentesque eleifend, diam eu consectetur cursus, odio nulla imperdiet augue, ac dapibus lectus lectus eu lacus. Pellentesque ac mauris nec tortor scelerisque mattis ac sit amet elit. Praesent at magna et dolor posuere facilisis eu ac quam. Vestibulum dui est, porttitor posuere ornare a, pulvinar in urna. Proin id sem magna. Praesent sit amet dolor in eros sollicitudin vestibulum sed nec diam.</p>
+                        <br/>
+                        <p class="good">The Bad</p>
+                        <p>Best Review: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id felis bibendum nisl sodales tempus. Donec vulputate arcu ut ex interdum, consectetur pharetra purus tempor. Cras vitae ullamcorper libero. Vestibulum rhoncus odio vitae vulputate vehicula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur bibendum tincidunt porttitor. Vestibulum at lobortis ligula. Maecenas fringilla ut mi eu pretium. Pellentesque eleifend, diam eu consectetur cursus, odio nulla imperdiet augue, ac dapibus lectus lectus eu lacus. Pellentesque ac mauris nec tortor scelerisque mattis ac sit amet elit. Praesent at magna et dolor posuere facilisis eu ac quam. Vestibulum dui est, porttitor posuere ornare a, pulvinar in urna. Proin id sem magna. Praesent sit amet dolor in eros sollicitudin vestibulum sed nec diam.
+                    </div>
                     <br/>
                 </a>
                 {% endfor %}
