@@ -42,7 +42,7 @@ def get_reviews(site,ind_lst):
     # site = "airbnb" or "ta" 
     sorted_lst = sorted(ind_lst)
     f = [] 
-    low = (ind_lst[0]/500) + 1
+    low = (sorted_lst[0]/500) + 1
     tempBucket = []
     for elem in sorted_lst: 
         if elem < low * 500:
@@ -53,7 +53,7 @@ def get_reviews(site,ind_lst):
             tempBucket = [elem]
     f.append(tempBucket)
 
-
+    print(f)
     reviews = []
 
     for cluster in f:
@@ -112,6 +112,11 @@ def get_airbnb_results(query):
         min_sent, min_review_index = sorted_sent_scores_index_pairs[0]
         max_sent, max_review_index = sorted_sent_scores_index_pairs[-1]
 
+        print ("MIN INDEX")
+        print (min_review_index)
+
+        print ("MAX INDEX")
+        print (max_review_index)
         min_max_indices.append(min_review_index) 
         min_max_indices.append(max_review_index)
         avg_sent = np.average([sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs])
@@ -127,6 +132,7 @@ def get_airbnb_results(query):
             'max_sent_review': "", #max_review,
             'avg_sent_score': avg_sent 
         })
+    print (min_max_indices)
     reviews = get_reviews('airbnb', min_max_indices)
     for i, review in enumerate(reviews):
         if i % 2 == 0: 
@@ -177,7 +183,6 @@ def get_hotel_results(query):
     del hotel_images
     reviews = get_reviews('ta', min_max_indices)
     for i, review in enumerate(reviews):
-        print (i)
         if i % 2 == 0: 
             ordered_listings[i/2]['min_sent_review'] = review 
         else:
