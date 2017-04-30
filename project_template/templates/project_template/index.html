@@ -64,34 +64,10 @@
                     <br/>
             </a>
             <h5>Other places you might be interested in:</h5>
-            <div class="output">
+            <div class="output hotel">
                 <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
+          
             {% for line in hotel_output %}
-                <a href="{{ line.listing_url }}" class="tile" target="_blank">
-                    <img src="{{ line.image_url }}" class="tile_icon">
-                    <br/>
-                    <b>{{ line.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ line.score }}</span>
-                    <br/>
-                    <div class="reviews">
-                        <p>{{ line.average_sent_score }}</p>
-                        <p class="good">The Good</p>
-                        <p> {{ line.max_sent_score }}</p>
-                        <p> {{ line.max_sent_review }}</p>
-                        <br/>
-                        <p class="good">The Bad</p>
-                        <p> {{ line.min_sent_score }}</p>
-                        <p> {{ line.min_sent_review }}</p>
-                    </div>
-                    <br/>
-                </a>
-            {% endfor %}
-            </div>
-            <div class="output">
-                <h3><font color="#ff5a5f">Airbnb</font></h3>
-                {% for line in airbnb_output %}
                 <a href="{{ line.listing_url }}" class="tile" target="_blank">
                     <img src="{{ line.image_url }}" class="tile_icon">
                     <br/>
@@ -112,7 +88,35 @@
      
                     <br/>
                 </a>
+            {% endfor %}
+             
+            </div>
+            <div class="output airbnb">
+                <h3><font color="#ff5a5f">Airbnb</font></h3>
+            
+                {% for line in airbnb_output %}
+                <a href="{{ line.listing_url }}" id="airbnb" class="tile" target="_blank">
+                    <img src="{{ line.image_url }}" class="tile_icon">
+                    <br/>
+                    <b>{{ line.name }}</b><br/>
+                    Similarity Score:
+                    <span class="sentiments">
+                        {{ line.score }}</span>
+                    <br/>
+                   
+                    <p>{{ line.average_sent_score }}
+                    <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>
+                    <br>
+                    {{ line.max_sent_review }}
+                    <br>
+                    <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>
+                    <br>
+                    {{ line.min_sent_review }}</p>
+     
+                    <br/>
+                </a>
                 {% endfor %}
+           
             </div>
 
 {#            <div class="pagination">#}
