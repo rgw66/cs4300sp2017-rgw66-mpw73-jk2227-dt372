@@ -45,7 +45,7 @@
             </div>
             <br/>
             {% if airbnb_output or hotel_output %}
-            <h4>Best results For:</h4>
+            <h4>Winner:</h4>
             <p>{{ search }}</p><br/>
             <a href="{{ best_result.listing_url }}" class="tile" target="_blank">
                     <img src="{{ best_result.image_url }}" class="tile_icon">
@@ -65,7 +65,7 @@
             </a>
             <h5>Other places you might be interested in:</h5>
             <div class="output hotel">
-                <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
+                <h3><font color="white" size="20">Hotel</font></h3>
           
             {% for line in hotel_output %}
                 <a href="{{ line.listing_url }}" class="tile" target="_blank">
@@ -92,7 +92,7 @@
              
             </div>
             <div class="output airbnb">
-                <h3><font color="#ff5a5f">Airbnb</font></h3>
+                <h3><font color="white" size="20">Airbnb</font></h3>
             
                 {% for line in airbnb_output %}
                 <a href="{{ line.listing_url }}" id="airbnb" class="tile" target="_blank">
