@@ -3,18 +3,6 @@ from scipy import sparse
 import numpy as np
 import pickle
 import boto3
-import nltk
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from nltk.tokenize import TreebankWordTokenizer
-
-
-try:
-  sid = SentimentIntensityAnalyzer()
-except:
-  nltk.download("vader_lexicon")
-  sid = SentimentIntensityAnalyzer()
-
-tokenizer = TreebankWordTokenizer()
 
 ta_listings = pickle.load(open("data/tripadvisor_hotel_info.pickle", 'rb'))
 airbnb_listings = pickle.load(open("data/airbnb_listings.pickle", 'rb'))
@@ -31,6 +19,7 @@ ta_adj_mat = pickle.load(open("data/ta_adj_mat.pickle"))
 airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 
 airbnb_sentscores = pickle.load(open("airbnb_sentscores.pickle"))    
+ta_sentscores = pickle.load(open("tripadvisor_sentscores.pickle")) 
 
 BUCKET_NAME = 'cs4300-dream-team'
 S3 = boto3.resource('s3')
@@ -111,30 +100,15 @@ def get_airbnb_results(query):
         listing_id = str(int(l))
         airbnb_listing_info = airbnb_listings[listing_id]
         name = airbnb_listing_info['name'].strip()
-        reviews = get_reviews('airbnb',airbnb_name_to_review_index[name])
-        scores = [] 
-        scores2 = [] 
-        minScore = 10000
-        minReview = None
-        maxScore = -10000
-        maxReview = None
-        for review in reviews:
-            #score = 0.0 
-            #for token in tokenizer.tokenize(review):
-            #    if token in airbnb_sentscores:
-            #        score += airbnb_sentscores[token]
-            score = sid.polarity_scores(review)['compound']
-            if score < minScore:
-                minScore = score 
-                minReview = review 
-            if score > maxScore :
-                maxScore = score 
-                maxReview = review
-            scores.append(score)
-            #scores2.append(sid.polarity_scores(review)['compound'])
-        avg_sent = sum(scores) / float(len(scores))
-        max_sent = max(scores)
-        min_sent = min(scores)
+        indices_per_listing = airbnb_name_to_review_index[name]
+        sent_scores_index_pairs = [(airbnb_sentscores[i], i) for i in indices_per_listing]
+        sorted_sent_scores_index_pairs = sorted(sent_scores_index_pairs, key=lambda x : x[0])
+        min_sent, min_review_index = sorted_sent_scores_index_pairs[0]
+        max_sent, max_review_index = sorted_sent_scores_index_pairs[-1]
+        reviews = get_reviews('airbnb', [min_review_index, max_review_index])
+        min_review = reviews[0]
+        max_review = reviews[1]
+        avg_sent = np.average([sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs])
 
         ordered_listings.append({
             'name': name,
@@ -142,15 +116,14 @@ def get_airbnb_results(query):
             'image_url': airbnb_listing_info['picture_url'],
             'score': str(score), 
             'min_sent_score': min_sent,
-            'min_sent_review': minReview,
+            'min_sent_review': min_review,
             'max_sent_score': max_sent,
-            'max_sent_review': maxReview,
+            'max_sent_review': max_review,
             'avg_sent_score': avg_sent 
         })
-        # print (get_reviews('airbnb',airbnb_name_to_review_index[name]))
+        
     del airbnb_vectorizer
     
-    # print (get_hotel_reviews('airbnb', listings))
     return ordered_listings
 
 def get_hotel_results(query):
@@ -165,58 +138,27 @@ def get_hotel_results(query):
 
     for (l, ind, score) in zip(listings, indices, scores):
         name = ta_index_to_listing[int(l)]
-        #print (tripadvisor_name_to_review_index[name])
-        reviews = get_reviews('ta', tripadvisor_name_to_review_index[name])
-        scores = [] 
-        scores2 = [] 
-        minScore = 10000
-        minReview = None
-        maxScore = -10000
-        maxReview = None
-        for review in reviews:
-            #score = 0.0 
-            #for token in tokenizer.tokenize(review):
-            #    if token in airbnb_sentscores:
-            #        score += airbnb_sentscores[token]
-            score = sid.polarity_scores(review)['compound']
-            if score < minScore:
-                minScore = score 
-                minReview = review 
-            if score > maxScore :
-                maxScore = score 
-                maxReview = review
-            scores.append(score)
-            #scores2.append(sid.polarity_scores(review)['compound'])
-        avg_sent = sum(scores) / float(len(scores))
-        #avg_sent2 = sum(scores2) / float(len(scores2))
-        #print ("Avg sent: %f"  % avg_sent)
-        #print ("Sid avg sent: %f " % avg_sent2)
-        max_sent = max(scores)
-        #max_sent2 = max(scores2)
-        print ("Max sent: %f"  % max_sent)
-        print ("Max sent a: %f"  % maxScore)
-        print ("Max score review ")
-        print (maxReview)
-        #print ("Max sent2: %f " % max_sent2)
-        min_sent = min(scores)
-        #min_sent2 = min(scores2)
-        print ("Min sent: %f"  % min_sent)
-        print ("Min sent a: %f" % minScore)
-        print ("Min score review ")
-        print (minReview)
-        #print ("Min sent2: %f " % min_sent2)
+        indices_per_listing = tripadvisor_name_to_review_index[name]
+        sent_scores_index_pairs = [(ta_sentscores[i], i) for i in indices_per_listing]
+        sorted_sent_scores_index_pairs = sorted(sent_scores_index_pairs, key=lambda x : x[0])
+        min_sent, min_review_index = sorted_sent_scores_index_pairs[0]
+        max_sent, max_review_index = sorted_sent_scores_index_pairs[-1]
+        reviews = get_reviews('ta', [min_review_index, max_review_index])
+        min_review = reviews[0]
+        max_review = reviews[1]
+        avg_sent = np.average([sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs])
         ordered_listings.append({
             'name': name,
             'listing_url': ta_listings[name][0],
             'image_url': hotel_images[name],
             'score': str(score),
             'min_sent_score': min_sent,
-            'min_sent_review': minReview,
+            'min_sent_review': min_review,
             'max_sent_score': max_sent,
-            'max_sent_review': maxReview,
+            'max_sent_review': max_review,
             'avg_sent_score': avg_sent
         })
-        # print (tripadvisor_name_to_review_index[name])
+
     del ta_vectorizer
     del hotel_images
     return ordered_listings
