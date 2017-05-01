@@ -118,7 +118,7 @@ def get_airbnb_results(query):
     for (l, ind, score) in zip(listings, indices, scores):
         listing_id = str(int(l))
         airbnb_listing_info = airbnb_listings[listing_id]
-        name = airbnb_listing_info['name'].strip()
+        name = airbnb_listing_info['name']
         indices_per_listing = airbnb_name_to_review_index[name]
         sent_scores_index_pairs = [(airbnb_sentscores[i], i) for i in indices_per_listing]
         sorted_sent_scores_index_pairs = sorted(sent_scores_index_pairs, key=lambda x : x[0])
@@ -140,7 +140,8 @@ def get_airbnb_results(query):
             'max_sent_score': max_sent,
             'max_sent_review': "", 
             'avg_sent_score': avg_sent, 
-            'sent_scores': sent_scores
+            'sent_scores': sent_scores,
+            'rating': airbnb_listing_info['rating']
         })
 
     reviews = get_reviews('airbnb', min_max_indices)
@@ -189,7 +190,8 @@ def get_hotel_results(query):
             'max_sent_score': max_sent,
             'max_sent_review': "", # max_review,
             'avg_sent_score': avg_sent,
-            'sent_scores': sent_scores
+            'sent_scores': sent_scores,
+            'rating': ta_listings[name][1]
         })
 
     del ta_vectorizer
