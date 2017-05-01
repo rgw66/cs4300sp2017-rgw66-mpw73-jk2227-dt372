@@ -90,31 +90,25 @@ def get_reviews(site,ind_lst):
 
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k = 10, listing_type="total"):
-    query_updated = []
+    related_words = []
     for q in query.split():
-        query_updated += [q]
-        # if listing_type = "airbnb":
-        #     query_updated += [w[0] for w in closest_words(q, airbnb_svd_s, airbnb_svd_tt)]
-        # elif listing_type = "hotel":
-        #     query_updated += [w[0] for w in closest_words(q, hotel_svd_s, hotel_svd_tt)]
-        # else:
-        #     query_updated += [w[0] for w in closest_words(q, total_svd_s, total_svd_tt)]
-        query_updated += [w[0] for w in closest_words(q, total_svd_s, total_svd_tt)]
-    query_updated = " ".join(query_updated)
-    print(query_updated)
-    vec = vectorizer.transform([query_updated]).todense().T
+        related_words += closest_words(q, total_svd_s, total_svd_tt)
+    related_words = list(set(related_words))
+    related_words = [w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)[:5]]
+    print(related_words)
+    vec = vectorizer.transform([query]).todense().T
     results = np.dot(ht_mat, normalize(np.dot(tt_mat, vec), axis = 0)).T
     indices = np.squeeze(np.asarray(np.argsort(results)))[::-1].T[:top_k]
     scores = np.squeeze(np.asarray(np.sort(results)))[::-1].T[:top_k]    
     listings = np.zeros(indices.shape)
     for i in range(indices.shape[0]):
         listings[i] = mat_to_listing_dict[indices[i]]
-    return (listings.tolist(), indices.tolist(), scores.tolist())
+    return (listings.tolist(), indices.tolist(), scores.tolist(), related_words)
 
 
 def get_airbnb_results(query):
     airbnb_vectorizer = pickle.load(open("data/airbnb_vectorizer.pickle", "rb"))
-    listings, indices, scores = search_lda(query,
+    listings, indices, scores, related_words = search_lda(query,
                                            airbnb_vectorizer,
                                            airbnb_lda_ht,
                                            airbnb_lda_tt,
@@ -163,7 +157,7 @@ def get_airbnb_results(query):
 def get_hotel_results(query):
     ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
     hotel_images = pickle.load(open("data/hotel_images.pickle", "rb"))
-    listings, indices, scores = search_lda(query,
+    listings, indices, scores, related_words = search_lda(query,
                                            ta_vectorizer,
                                            ta_lda_ht,
                                            ta_lda_tt,
