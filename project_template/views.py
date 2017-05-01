@@ -33,8 +33,6 @@ def index(request):
             airbnb_sentscores.extend(info['sent_scores'])
           else:
             hotel_sentscores.extend(info['sent_scores'])
-        print (airbnb_sentscores)
-        print (hotel_sentscores)
 
     return render_to_response('project_template/index.html',
                           {'airbnb_output': airbnb_output,
