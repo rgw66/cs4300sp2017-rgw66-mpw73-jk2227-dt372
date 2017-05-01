@@ -100,6 +100,16 @@
                     <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
                     {% for line in hotel_output %}
                     <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                        {% if line.rating == None %}
+                            <p>No Rating Available</p>
+                        {% else %}
+                        <!-- adapted from https://codepen.io/Bluetidepro/pen/GkpEa?editors=1100-->
+                            <div class="star-ratings-css">
+                              <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                            </div>
+                        <!-- end adaptation -->
+                        {% endif %}
                         <div class="imgWrap">
                             <img src="{{ line.image_url }}" class="tile_icon">
                         </div>
@@ -110,7 +120,7 @@
                         <br/>
                         Average Sentiment Score:
                         <span class="sentiments">{{ line.avg_sent_score }}</span>
-{#                        <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>#}
+{#                        <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span></b>#}
 {#                        <br>#}
 {#                        {{ line.max_sent_review }}#}
 {#                        <br>#}
@@ -126,6 +136,16 @@
                     <h3><font color="#ff5a5f">Airbnb</font></h3>
                     {% for line in airbnb_output %}
                     <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                        {% if line.rating == None %}
+                            <p>No Rating Available</p>
+                        {% else %}
+                        <!-- adapted from https://codepen.io/Bluetidepro/pen/GkpEa?editors=1100-->
+                            <div class="star-ratings-css">
+                              <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                            </div>
+                        <!-- end adaptation -->
+                        {% endif %}
                         <div class="imgWrap">
                             <img src="{{ line.image_url }}" class="tile_icon">
                         </div>
@@ -144,6 +164,20 @@
                     <h3><font>Overall</font></h3>
                     {% for line in hotel_output %}
                     <a href="{{ line.listing_url }}" class="tile" target="_blank">
+
+
+                        {% if line.rating == None %}
+                            <p>No Rating Available</p>
+                        {% else %}
+                        <!-- adapted from https://codepen.io/Bluetidepro/pen/GkpEa?editors=1100-->
+                            <div class="star-ratings-css">
+                              <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                            </div>
+                        <!-- end adaptation -->
+                        {% endif %}
+                            
+
                         <div class="imgWrap">
                             <img src="{{ line.image_url }}" class="tile_icon">
                         </div>
@@ -155,11 +189,11 @@
                         <br/>
 
                         <p>{{ line.average_sent_score }}
-                        <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>
+                        <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span></b>
                         <br>
                         {{ line.max_sent_review }}
                         <br>
-                        <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>
+                        <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span></b>
                         <br>
                         {{ line.min_sent_review }}</p>
 

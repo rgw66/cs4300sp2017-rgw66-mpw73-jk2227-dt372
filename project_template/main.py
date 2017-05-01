@@ -214,7 +214,7 @@ def get_hotel_results(query):
             'max_sent_review': "", # max_review,
             'avg_sent_score': avg_sent,
             'sent_scores': sent_scores,
-            'rating': ta_listings[name][1]
+            'rating': ta_listings[name][1]*20
         })
 
     del ta_vectorizer
