@@ -15,13 +15,26 @@ def index(request):
     words=json.load(open("jsons/words.json"))
     airbnb_output = []
     hotel_output = []
+    airbnb_sentscores = [] 
+    hotel_sentscores = [] 
     overall_output = []
     query = ''
     if request.GET.get('search'):
         query = request.GET.get('search')
         airbnb_output = get_airbnb_results(query)
         hotel_output = get_hotel_results(query)
+        #for airbnb_info in airbnb_output:
+        #  airbnb_sentscores.extend(airbnb_info['sent_scores'])
+        #for hotel_info in hotel_output:
+        #  hotel_sentscores.extend(hotel_info['sent_scores'])
         overall_output = get_overall_results(query)
+        for info in overall_output:
+          if info['is_airbnb']:
+            airbnb_sentscores.extend(info['sent_scores'])
+          else:
+            hotel_sentscores.extend(info['sent_scores'])
+        print (airbnb_sentscores)
+        print (hotel_sentscores)
 
     return render_to_response('project_template/index.html',
                           {'airbnb_output': airbnb_output,
@@ -30,6 +43,8 @@ def index(request):
                            'overall_output': overall_output,
                            'magic_url': request.get_full_path(),
                            'words': words,
+                           'hotel_sentscores': hotel_sentscores,
+                           'airbnb_sentscores': airbnb_sentscores
                            })
 
 def refine(request):
