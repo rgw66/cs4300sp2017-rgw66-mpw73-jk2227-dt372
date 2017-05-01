@@ -23,18 +23,6 @@ def index(request):
         hotel_output = get_hotel_results(query)
         overall_output = get_overall_results(query)
 
-        ## KEEP THIS. This will be helpful if we want to do pages
-        # search = request.GET.get('search')
-        # output_list = find_similar(search)
-        # paginator = Paginator(output_list, 10)
-        # page = request.GET.get('page')
-        #
-        # try:
-        #     output = paginator.page(page)
-        # except PageNotAnInteger:
-        #     output = paginator.page(1)
-        # except EmptyPage:
-        #     output = paginator.page(paginator.num_pages)
     return render_to_response('project_template/index.html',
                           {'airbnb_output': airbnb_output,
                            'search': query,
@@ -45,7 +33,6 @@ def index(request):
                            })
 
 def refine(request):
-    # print request.GET.get('words')
     hotel_words = get_closest_words("hotel", request.GET.get('words'))
     airbnb_words = get_closest_words("airbnb", request.GET.get('words'))
     return JsonResponse({"hotel_words":hotel_words,
