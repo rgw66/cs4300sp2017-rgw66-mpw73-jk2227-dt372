@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from .models import Docs
 from django.template import loader
 from .form import QueryForm
-from main import get_airbnb_results, get_hotel_results, get_closest_words
+from main import get_airbnb_results, get_hotel_results, get_closest_words, get_overall_results
 from django.http import JsonResponse
 import json
 # from .test import get_hotel_results, get_hotel_tuples, get_airbnb_tuples, get_airbnb_results
@@ -15,9 +15,9 @@ def index(request):
     words=json.load(open("jsons/words.json"))
     airbnb_output = []
     hotel_output = []
-    best_result = {}
     airbnb_sentscores = [] 
     hotel_sentscores = [] 
+    overall_output = []
     query = ''
     if request.GET.get('search'):
         query = request.GET.get('search')
@@ -27,29 +27,13 @@ def index(request):
           airbnb_sentscores.extend(airbnb_info['sent_scores'])
         for hotel_info in hotel_output:
           hotel_sentscores.extend(hotel_info['sent_scores'])
+        overall_output = get_overall_results(query)
 
-        if airbnb_output[0]['score'] > hotel_output[0]['score']:
-            best_result = airbnb_output[0]
-        else:
-            best_result = hotel_output[0]
-
-        ## KEEP THIS. This will be helpful if we want to do pages
-        # search = request.GET.get('search')
-        # output_list = find_similar(search)
-        # paginator = Paginator(output_list, 10)
-        # page = request.GET.get('page')
-        #
-        # try:
-        #     output = paginator.page(page)
-        # except PageNotAnInteger:
-        #     output = paginator.page(1)
-        # except EmptyPage:
-        #     output = paginator.page(paginator.num_pages)
     return render_to_response('project_template/index.html',
                           {'airbnb_output': airbnb_output,
                            'search': query,
                            'hotel_output': hotel_output,
-                           'best_result': best_result,
+                           'overall_output': overall_output,
                            'magic_url': request.get_full_path(),
                            'words': words,
                            'hotel_sentscores': hotel_sentscores,
@@ -57,7 +41,6 @@ def index(request):
                            })
 
 def refine(request):
-    # print request.GET.get('words')
     hotel_words = get_closest_words("hotel", request.GET.get('words'))
     airbnb_words = get_closest_words("airbnb", request.GET.get('words'))
     return JsonResponse({"hotel_words":hotel_words,

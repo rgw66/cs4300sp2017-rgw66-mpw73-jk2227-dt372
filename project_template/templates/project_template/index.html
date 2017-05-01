@@ -7,6 +7,7 @@
         <script src="https://d3js.org/d3.v4.min.js"></script>
         <script src="{% static 'main.js' %}"></script>
 
+
     </head>
     
     <body>
@@ -40,6 +41,11 @@
                     <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
                 {% endfor %}
                 </div>
+                <br/>
+                <div class="submit_button" id="submit_button">
+                    <button type='button' class="btn btn-info" onclick="refine_words()"> Refine Search </button>
+                </div>
+                <br/>
                 <div id="refine_form" style='display:none;'>
                     <br/>
                     <h5>Refine Your Search</h5>
@@ -52,40 +58,41 @@
                     </div>
     {#            <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">#}
                 </div>
+                <br/>
+                <div class="submit_button" id="submit_button">
+                    <button type='submit' class="btn btn-info"> Submit </button>
+                </div>
             <br/>
             <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input">
             </form>
-            <div class="submit_button" id="submit_button">
-                <button class="btn btn-info" onclick="refine_words()"> Go! </button>
-            </div>
             <br/>
 
             {% if airbnb_output or hotel_output %}
-            <h4>Winner:</h4>
-            <p>{{ search }}</p><br/>
-            <a href="{{ best_result.listing_url }}" class="tile" target="_blank">
-                    <div class="imgWrap">
-                        <img src="{{ best_result.image_url }}" class="tile_icon">
-                    </div>
-                    <br/>
-                    <b>{{ best_result.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ best_result.score }}</span>
-                    <br/>
-                    <p>{{ line.average_sent_score }}</p>
-                    <p>{{ line.min_sent_score }}</p>
-                    <p style="font-size: 3px">{{ line.min_sent_review }}</p>
-                    <br/>
-                    <p>{{ line.max_sent_score }}</p>
-                    <p>{{ line.max_sent_review }}</p>
-                    <br/>
-            </a>
-            <br/>
-            <br/>
-
-
-            <h5>Other places you might be interested in:</h5>
+            <h4>Results:</h4>
+{#            <p>{{ search }}</p><br/>#}
+{#            <div class="tile">#}
+{#                    <div class="imgWrap">#}
+{#                        <img src="{{ best_result.image_url }}" class="tile_icon">#}
+{#                    </div>#}
+{#                    <br/>#}
+{#                    <b>{{ best_result.name }}</b><br/>#}
+{#                    Similarity Score:#}
+{#                    <span class="sentiments">#}
+{#                        {{ best_result.score }}</span>#}
+{#                    <br/>#}
+{#                    <a href="{{ best_result.listing_url }}"  target="_blank">Link</a>#}
+{#                    <p>{{ line.average_sent_score }}</p>#}
+{#                    <p>{{ line.min_sent_score }}</p>#}
+{#                    <p style="font-size: 3px">{{ line.min_sent_review }}</p>#}
+{#                    <br/>#}
+{#                    <p>{{ line.max_sent_score }}</p>#}
+{#                    <br/>#}
+{#            </div>#}
+{#            <br/>#}
+{#            <br/>#}
+{##}
+{##}
+{#            <h5>Other places you might be interested in:</h5>#}
             <form id="list_select">
                 <input type="radio" name="type" value="hotel" onclick="change_list(event)">
                 <span class="check_label">-Hotel </span>
@@ -99,7 +106,7 @@
                 <div class="output" id="hotel_output" style="display: none">
                     <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
                     {% for line in hotel_output %}
-                    <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                    <div class="tile">
                         {% if line.rating == None %}
                             <p>No Rating Available</p>
                         {% else %}
@@ -108,34 +115,48 @@
                               <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
                               <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
                             </div>
+                            <br/>
                         <!-- end adaptation -->
-                        {% endif %}
+                        {% endif %}  
+
+                        <a  href="{{ line.listing_url }}" target="_blank">Link</a>
+
                         <div class="imgWrap">
                             <img src="{{ line.image_url }}" class="tile_icon">
                         </div>
                         <br/>
                         <b>{{ line.name }}</b><br/>
                         Similarity Score:
-                            {{ line.score }}
+                        {{ line.score }}
                         <br/>
                         Average Sentiment Score:
                         <span class="sentiments">{{ line.avg_sent_score }}</span>
-{#                        <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span></b>#}
-{#                        <br>#}
-{#                        {{ line.max_sent_review }}#}
-{#                        <br>#}
-{#                        <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>#}
-{#                        <br>#}
-{#                        {{ line.min_sent_review }}</p>#}
+                        <br/>
+
+                        <div class="toggle-review">
+                            Show best review
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
+                                {{ line.max_sent_review }}
+                            </div>
+                        </div>
+
+                        <div class="toggle-review">
+                            Show worst review
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
+                                {{ line.min_sent_review }}
+                            </div>
+                        </div></p>
 
                         <br/>
-                    </a>
+                    </div>
                     {% endfor %}
                 </div>
                 <div class="output" id="airbnb_output" style="display: none">
                     <h3><font color="#ff5a5f">Airbnb</font></h3>
                     {% for line in airbnb_output %}
-                    <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                    <div class="tile">
                         {% if line.rating == None %}
                             <p>No Rating Available</p>
                         {% else %}
@@ -144,26 +165,48 @@
                               <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
                               <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
                             </div>
+                            <br/>
                         <!-- end adaptation -->
-                        {% endif %}
+                        {% endif %}  
+
+                        <a  href="{{ line.listing_url }}" target="_blank">Link</a>
+
                         <div class="imgWrap">
                             <img src="{{ line.image_url }}" class="tile_icon">
                         </div>
                         <br/>
                         <b>{{ line.name }}</b><br/>
                         Similarity Score:
-                        <span class="sentiments">
-                            {{ line.score }}</span>
+                        {{ line.score }}
                         <br/>
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
                         <br/>
+
+                        <div class="toggle-review">
+                            Show best review
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
+                                {{ line.max_sent_review }}
+                            </div>
+                        </div>
+
+                        <div class="toggle-review">
+                            Show worst review
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
+                                {{ line.min_sent_review }}
+                            </div>
+                        </div></p>
+
                         <br/>
-                    </a>
+                    </div>
                     {% endfor %}
                 </div>
                 <div class="output" id="total_output" >
                     <h3><font>Overall</font></h3>
-                    {% for line in hotel_output %}
-                    <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                    {% for line in overall_output %}
+                    <div class="tile">
 
 
                         {% if line.rating == None %}
@@ -174,9 +217,11 @@
                               <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
                               <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
                             </div>
+                            <br/>
                         <!-- end adaptation -->
-                        {% endif %}
-                            
+                        {% endif %} 
+
+                        <a  href="{{ line.listing_url }}" target="_blank">Link</a>
 
                         <div class="imgWrap">
                             <img src="{{ line.image_url }}" class="tile_icon">
@@ -184,21 +229,30 @@
                         <br/>
                         <b>{{ line.name }}</b><br/>
                         Similarity Score:
-                        <span class="sentiments">
-                            {{ line.score }}</span>
+                        {{ line.score }}
+                        <br/>
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
                         <br/>
 
-                        <p>{{ line.average_sent_score }}
-                        <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span></b>
-                        <br>
-                        {{ line.max_sent_review }}
-                        <br>
-                        <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span></b>
-                        <br>
-                        {{ line.min_sent_review }}</p>
+                        <div class="toggle-review">
+                            Show best review
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
+                                {{ line.max_sent_review }}
+                            </div>
+                        </div>
+
+                        <div class="toggle-review">
+                            Show worst review
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
+                                {{ line.min_sent_review }}
+                            </div>
+                        </div></p>
 
                         <br/>
-                    </a>
+                    </div>
                     {% endfor %}
 
                 </div>
