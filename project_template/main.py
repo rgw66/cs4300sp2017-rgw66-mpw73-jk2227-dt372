@@ -271,7 +271,8 @@ def get_overall_results(query):
                 'max_sent_review': "", 
                 'avg_sent_score': avg_sent, 
                 'sent_scores': sent_scores,
-                'rating': airbnb_listing_info['rating']
+                'rating': airbnb_listing_info['rating'],
+                'is_airbnb': True
             })
         else:
             name = ta_index_to_listing[int(l)]
@@ -298,7 +299,8 @@ def get_overall_results(query):
                 'max_sent_review': "", # max_review,
                 'avg_sent_score': avg_sent,
                 'sent_scores': sent_scores,
-                'rating': ta_listings[name][1]
+                'rating': ta_listings[name][1],
+                'is_airbnb': False
             })
     del total_vectorizer
     del hotel_images
