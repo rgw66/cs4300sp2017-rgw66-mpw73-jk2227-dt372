@@ -107,10 +107,10 @@ def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict,
                svd_weights, svd_topics, word_to_index, index_to_word, top_k = 10):
     related_words = []
     for q in query.split():
-        related_words += closest_words(q, svd_weights, svd_topics, word_to_index, index_to_word)
+        related_words += closest_words(q, svd_weights, svd_topics, word_to_index, index_to_word, k=10)
     related_words = list(set(related_words))
-    related_words = [w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)[:5]]
-    print(related_words)
+    related_words = [w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)[:10]]
+    # print(related_words)
     vec = vectorizer.transform([query]).todense().T
     results = np.dot(ht_mat, normalize(np.dot(tt_mat, vec), axis = 0)).T
     indices = np.squeeze(np.asarray(np.argsort(results)))[::-1].T[:top_k]

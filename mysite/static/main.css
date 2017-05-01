@@ -64,6 +64,9 @@ color: #4285F4;
     border: 1px solid black;
     border-radius: 2px;
     width: 200px;
+    margin:10px;
+    min-height: 200px;
+    vertical-align: bottom;
 }
 .refine_word_cloud:hover{
     background-color: #d8d8d8;
@@ -117,7 +120,6 @@ color: #4285F4;
 .tile:hover{
     background-color: rgba(66, 133, 244, 0.1);
     text-decoration: none;
-    cursor: pointer;
 }
 .imgWrap{
     height: 200px;
@@ -138,6 +140,10 @@ color: #4285F4;
 
 .airbnb{
     background-color: #ff5a5f;
+}
+
+.selected{
+    background-color: rgba(66, 133, 244, 0.3);
 }
 
 
@@ -181,4 +187,7 @@ end adaptation
     border: solid;
     margin: 7px;
     padding: 7px;
+}
+.toggle-review:hover {
+    cursor: pointer;
 }

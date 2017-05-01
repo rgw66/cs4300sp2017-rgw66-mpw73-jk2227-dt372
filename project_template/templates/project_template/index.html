@@ -41,6 +41,11 @@
                     <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
                 {% endfor %}
                 </div>
+                <br/>
+                <div class="submit_button" id="submit_button">
+                    <button type='button' class="btn btn-info" onclick="refine_words()"> Refine Search </button>
+                </div>
+                <br/>
                 <div id="refine_form" style='display:none;'>
                     <br/>
                     <h5>Refine Your Search</h5>
@@ -53,40 +58,41 @@
                     </div>
     {#            <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">#}
                 </div>
+                <br/>
+                <div class="submit_button" id="submit_button">
+                    <button type='submit' class="btn btn-info"> Submit </button>
+                </div>
             <br/>
             <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input">
             </form>
-            <div class="submit_button" id="submit_button">
-                <button class="btn btn-info" onclick="refine_words()"> Go! </button>
-            </div>
             <br/>
 
             {% if airbnb_output or hotel_output %}
-            <h4>Winner:</h4>
-            <p>{{ search }}</p><br/>
-            <div class="tile">
-                    <div class="imgWrap">
-                        <img src="{{ best_result.image_url }}" class="tile_icon">
-                    </div>
-                    <br/>
-                    <b>{{ best_result.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ best_result.score }}</span>
-                    <br/>
-                    <a href="{{ best_result.listing_url }}"  target="_blank">Link</a>
-                    <p>{{ line.average_sent_score }}</p>
-                    <p>{{ line.min_sent_score }}</p>
-                    <p style="font-size: 3px">{{ line.min_sent_review }}</p>
-                    <br/>
-                    <p>{{ line.max_sent_score }}</p>
-                    <br/>
-            </div>
-            <br/>
-            <br/>
-
-
-            <h5>Other places you might be interested in:</h5>
+            <h4>Results:</h4>
+{#            <p>{{ search }}</p><br/>#}
+{#            <div class="tile">#}
+{#                    <div class="imgWrap">#}
+{#                        <img src="{{ best_result.image_url }}" class="tile_icon">#}
+{#                    </div>#}
+{#                    <br/>#}
+{#                    <b>{{ best_result.name }}</b><br/>#}
+{#                    Similarity Score:#}
+{#                    <span class="sentiments">#}
+{#                        {{ best_result.score }}</span>#}
+{#                    <br/>#}
+{#                    <a href="{{ best_result.listing_url }}"  target="_blank">Link</a>#}
+{#                    <p>{{ line.average_sent_score }}</p>#}
+{#                    <p>{{ line.min_sent_score }}</p>#}
+{#                    <p style="font-size: 3px">{{ line.min_sent_review }}</p>#}
+{#                    <br/>#}
+{#                    <p>{{ line.max_sent_score }}</p>#}
+{#                    <br/>#}
+{#            </div>#}
+{#            <br/>#}
+{#            <br/>#}
+{##}
+{##}
+{#            <h5>Other places you might be interested in:</h5>#}
             <form id="list_select">
                 <input type="radio" name="type" value="hotel" onclick="change_list(event)">
                 <span class="check_label">-Hotel </span>
@@ -120,11 +126,11 @@
                         <br/>
                         <b>{{ line.name }}</b><br/>
                         Similarity Score:
-                        <span class="sentiments">
-                            {{ line.score }}</span>
+                        {{ line.score }}
                         <br/>
-
-                        <p>{{ line.average_sent_score }}
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
+                        <br/>
                         <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span></b>
 
                         <div class="toggle-review">
@@ -169,11 +175,11 @@
                         <br/>
                         <b>{{ line.name }}</b><br/>
                         Similarity Score:
-                        <span class="sentiments">
-                            {{ line.score }}</span>
+                        {{ line.score }}
                         <br/>
-
-                        <p>{{ line.average_sent_score }}
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
+                        <br/>
                         <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span></b>
 
                         <div class="toggle-review">
@@ -197,7 +203,7 @@
                 </div>
                 <div class="output" id="total_output" >
                     <h3><font>Overall</font></h3>
-                    {% for line in hotel_output %}
+                    {% for line in overall_output %}
                     <div class="tile">
 
 
@@ -220,11 +226,11 @@
                         <br/>
                         <b>{{ line.name }}</b><br/>
                         Similarity Score:
-                        <span class="sentiments">
-                            {{ line.score }}</span>
+                        {{ line.score }}
                         <br/>
-
-                        <p>{{ line.average_sent_score }}
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
+                        <br/>
                         <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span></b>
 
                         <div class="toggle-review">
