@@ -24,6 +24,8 @@ airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 
 airbnb_sentscores = pickle.load(open("airbnb_sentscores.pickle"))    
 ta_sentscores = pickle.load(open("tripadvisor_sentscores.pickle")) 
+airbnb_name_to_sent_avg = pickle.load(open("airbnb_name_to_sent_avg.pickle"))    
+tripadvisor_name_to_sent_avg = pickle.load(open("tripadvisor_name_to_sent_avg.pickle")) 
 
 
 airbnb_svd_s = pickle.load(open("data/airbnb_svd_s.pickle"))
@@ -158,7 +160,7 @@ def get_airbnb_results(query):
             'min_sent_review': "", 
             'max_sent_score': max_sent,
             'max_sent_review': "", 
-            'avg_sent_score': avg_sent, 
+            'avg_sent_score': airbnb_name_to_sent_avg[name], 
             'sent_scores': sent_scores,
             'rating': airbnb_listing_info['rating']
         })
@@ -202,7 +204,6 @@ def get_hotel_results(query):
 
         sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
 
-        avg_sent = np.average(sent_scores)
         ordered_listings.append({
             'name': name,
             'listing_url': ta_listings[name][0],
@@ -212,7 +213,7 @@ def get_hotel_results(query):
             'min_sent_review': "", # min_review,
             'max_sent_score': max_sent,
             'max_sent_review': "", # max_review,
-            'avg_sent_score': avg_sent,
+            'avg_sent_score': tripadvisor_name_to_sent_avg[name],
             'sent_scores': sent_scores,
             'rating': ta_listings[name][1]*20
         })
@@ -258,7 +259,6 @@ def get_overall_results(query):
             min_max_indices.append((1, min_review_index))
             min_max_indices.append((1, max_review_index))
             sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
-            avg_sent = np.average(sent_scores)
 
             ordered_listings.append({
                 'name': name,
@@ -269,7 +269,7 @@ def get_overall_results(query):
                 'min_sent_review': "", 
                 'max_sent_score': max_sent,
                 'max_sent_review': "", 
-                'avg_sent_score': avg_sent, 
+                'avg_sent_score': airbnb_name_to_sent_avg[name], 
                 'sent_scores': sent_scores,
                 'rating': airbnb_listing_info['rating'],
                 'is_airbnb': True
@@ -287,7 +287,6 @@ def get_overall_results(query):
 
             sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
 
-            avg_sent = np.average(sent_scores)
             ordered_listings.append({
                 'name': name,
                 'listing_url': ta_listings[name][0],
@@ -297,7 +296,7 @@ def get_overall_results(query):
                 'min_sent_review': "", # min_review,
                 'max_sent_score': max_sent,
                 'max_sent_review': "", # max_review,
-                'avg_sent_score': avg_sent,
+                'avg_sent_score': tripadvisor_name_to_sent_avg[name],
                 'sent_scores': sent_scores,
                 'rating': ta_listings[name][1],
                 'is_airbnb': False
