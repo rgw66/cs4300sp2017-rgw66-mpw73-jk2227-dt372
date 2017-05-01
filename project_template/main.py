@@ -11,10 +11,13 @@ airbnb_listings = pickle.load(open("data/airbnb_listings.pickle", 'rb'))
 ta_index_to_listing = pickle.load(open("data/ta_index_to_listing.pickle"))
 airbnb_mat_index_to_listing = pickle.load(open("data/airbnb_mat_index_to_listing.pickle"))
 ta_mat_index_to_listing = pickle.load(open("data/ta_mat_index_to_listing.pickle"))
+total_mat_index_to_listing = pickle.load(open("data/total_mat_index_to_listing.pickle"))
 ta_lda_ht = pickle.load(open("data/ta_lda_ht.mat"))
 ta_lda_tt = pickle.load(open("data/ta_lda_tt.mat"))
 airbnb_lda_ht = pickle.load(open("data/airbnb_lda_ht.mat"))
 airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
+total_lda_ht = pickle.load(open("data/total_lda_ht.mat"))
+total_lda_tt = pickle.load(open("data/total_lda_tt.mat"))
 
 ta_adj_mat = pickle.load(open("data/ta_adj_mat.pickle"))
 airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
@@ -22,12 +25,23 @@ airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 airbnb_sentscores = pickle.load(open("airbnb_sentscores.pickle"))    
 ta_sentscores = pickle.load(open("tripadvisor_sentscores.pickle")) 
 
+
+airbnb_svd_s = pickle.load(open("data/airbnb_svd_s.pickle"))
+airbnb_svd_tt = pickle.load(open("data/airbnb_svd_tt.pickle")) 
+ta_svd_s = pickle.load(open("data/ta_svd_s.pickle"))
+ta_svd_tt = pickle.load(open("data/ta_svd_tt.pickle"))
 total_svd_s = pickle.load(open("data/total_svd_s.pickle"))
 total_svd_tt = pickle.load(open("data/total_svd_tt.pickle"))
 
-total_vectorizer = pickle.load(open("data/total_vectorizer.pickle"))
-word_to_index = total_vectorizer.vocabulary_
-index_to_word = {i:t for t,i in word_to_index.iteritems()}
+airbnb_vectorizer = pickle.load(open("data/airbnb_vectorizer.pickle", "rb"))
+ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
+total_vectorizer = pickle.load(open("data/total_vectorizer.pickle", "rb"))
+ta_word_to_index = ta_vectorizer.vocabulary_
+ta_index_to_word = {i:t for t,i in ta_word_to_index.iteritems()}
+airbnb_word_to_index = airbnb_vectorizer.vocabulary_
+airbnb_index_to_word = {i:t for t,i in airbnb_word_to_index.iteritems()}
+total_word_to_index = total_vectorizer.vocabulary_
+total_index_to_word = {i:t for t,i in total_word_to_index.iteritems()}
 
 BUCKET_NAME = 'cs4300-dream-team'
 S3 = boto3.resource('s3')
@@ -36,7 +50,7 @@ CLIENT = boto3.client('s3')
 tripadvisor_name_to_review_index = pickle.load(open("tripadvisor_name_to_review_index.pickle"))
 airbnb_name_to_review_index = pickle.load(open("airbnb_name_to_review_index.pickle"))
 
-def closest_words(word_in, total_svd_s, total_svd_tt, k = 5):
+def closest_words(word_in, total_svd_s, total_svd_tt, word_to_index, index_to_word, k = 5):
     if word_in not in word_to_index: return []
     sims = np.matmul(total_svd_tt.T, np.multiply(total_svd_s, total_svd_tt[:, word_to_index[word_in]]))
     asort = np.argsort(-sims)[:k+1]
@@ -89,10 +103,11 @@ def get_reviews(site,ind_lst):
     return unscrambled_reviews #reviews
 
 
-def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k = 10):
+def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, 
+               svd_weights, svd_topics, word_to_index, index_to_word, top_k = 10):
     related_words = []
     for q in query.split():
-        related_words += closest_words(q, total_svd_s, total_svd_tt)
+        related_words += closest_words(q, svd_weights, svd_topics, word_to_index, index_to_word)
     related_words = list(set(related_words))
     related_words = [w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)[:5]]
     print(related_words)
@@ -112,7 +127,11 @@ def get_airbnb_results(query):
                                            airbnb_vectorizer,
                                            airbnb_lda_ht,
                                            airbnb_lda_tt,
-                                           airbnb_mat_index_to_listing)
+                                           airbnb_mat_index_to_listing,
+                                           airbnb_svd_s,
+                                           airbnb_svd_tt,
+                                           airbnb_word_to_index,
+                                           airbnb_index_to_word)
     ordered_listings = []
     min_max_indices = [] 
     for (l, ind, score) in zip(listings, indices, scores):
@@ -162,7 +181,11 @@ def get_hotel_results(query):
                                            ta_vectorizer,
                                            ta_lda_ht,
                                            ta_lda_tt,
-                                           ta_mat_index_to_listing)
+                                           ta_mat_index_to_listing,
+                                           ta_svd_s,
+                                           ta_svd_tt,
+                                           ta_word_to_index,
+                                           ta_index_to_word)
     ordered_listings = []
     min_max_indices = [] 
 
@@ -205,6 +228,92 @@ def get_hotel_results(query):
 
     return ordered_listings
 
+def get_overall_results(query):
+    total_vectorizer = pickle.load(open("data/total_vectorizer.pickle", "rb"))
+    hotel_images = pickle.load(open("data/hotel_images.pickle", "rb"))
+    listings, indices, scores, related_words = search_lda(query,
+                                           total_vectorizer,
+                                           total_lda_ht,
+                                           total_lda_tt,
+                                           total_mat_index_to_listing,
+                                           total_svd_s,
+                                           total_svd_tt,
+                                           total_word_to_index,
+                                           total_index_to_word)
+    ordered_listings = []
+    min_max_indices = [] 
+
+    threshold = (ta_lda_ht.shape)[0]
+    for (l, ind, score) in zip(listings, indices, scores):
+        if (ind > threshold):
+            listing_id = str(int(l))
+            airbnb_listing_info = airbnb_listings[listing_id]
+            name = airbnb_listing_info['name']
+            indices_per_listing = airbnb_name_to_review_index[name]
+            sent_scores_index_pairs = [(airbnb_sentscores[i], i) for i in indices_per_listing]
+            sorted_sent_scores_index_pairs = sorted(sent_scores_index_pairs, key=lambda x : x[0])
+            min_sent, min_review_index = sorted_sent_scores_index_pairs[0]
+            max_sent, max_review_index = sorted_sent_scores_index_pairs[-1]
+            
+            min_max_indices.append((1, min_review_index))
+            min_max_indices.append((1, max_review_index))
+            sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
+            avg_sent = np.average(sent_scores)
+
+            ordered_listings.append({
+                'name': name,
+                'listing_url': airbnb_listing_info['listing_url'],
+                'image_url': airbnb_listing_info['picture_url'],
+                'score': str(score), 
+                'min_sent_score': min_sent,
+                'min_sent_review': "", 
+                'max_sent_score': max_sent,
+                'max_sent_review': "", 
+                'avg_sent_score': avg_sent, 
+                'sent_scores': sent_scores,
+                'rating': airbnb_listing_info['rating']
+            })
+        else:
+            name = ta_index_to_listing[int(l)]
+            indices_per_listing = tripadvisor_name_to_review_index[name]
+            sent_scores_index_pairs = [(ta_sentscores[i], i) for i in indices_per_listing]
+            sorted_sent_scores_index_pairs = sorted(sent_scores_index_pairs, key=lambda x : x[0])
+            min_sent, min_review_index = sorted_sent_scores_index_pairs[0]
+            max_sent, max_review_index = sorted_sent_scores_index_pairs[-1]
+            
+            min_max_indices.append((0, min_review_index))
+            min_max_indices.append((0, max_review_index))
+
+            sent_scores = [sent_scores_index_pair[0] for sent_scores_index_pair in sent_scores_index_pairs]
+
+            avg_sent = np.average(sent_scores)
+            ordered_listings.append({
+                'name': name,
+                'listing_url': ta_listings[name][0],
+                'image_url': hotel_images[name],
+                'score': str(score),
+                'min_sent_score': min_sent,
+                'min_sent_review': "", # min_review,
+                'max_sent_score': max_sent,
+                'max_sent_review': "", # max_review,
+                'avg_sent_score': avg_sent,
+                'sent_scores': sent_scores,
+                'rating': ta_listings[name][1]
+            })
+    del total_vectorizer
+    del hotel_images
+    reviews = []
+    for i, min_max_ind in min_max_indices:
+        if (i == 0): reviews += get_reviews('ta', [min_max_ind])
+        else: reviews += get_reviews('airbnb', [min_max_ind])
+    for i, review in enumerate(reviews):
+        if i % 2 == 0: 
+            ordered_listings[i/2]['min_sent_review'] = review 
+        else:
+            ordered_listings[i/2]['max_sent_review'] = review 
+
+    return ordered_listings
+
 def get_closest_words(listing_type, query):
     if listing_type == "airbnb":
         airbnb_vectorizer = pickle.load(open("data/airbnb_vectorizer.pickle", "rb"))
@@ -212,20 +321,32 @@ def get_closest_words(listing_type, query):
                                                               airbnb_vectorizer,
                                                               airbnb_lda_ht,
                                                               airbnb_lda_tt,
-                                                              airbnb_mat_index_to_listing)
+                                                              airbnb_mat_index_to_listing,
+                                                              airbnb_svd_s,
+                                                              airbnb_svd_tt,
+                                                              airbnb_word_to_index,
+                                                              airbnb_index_to_word)
     elif listing_type == "hotel":
         ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
         listings, indices, scores, related_words = search_lda(query,
                                                           ta_vectorizer,
                                                           ta_lda_ht,
                                                           ta_lda_tt,
-                                                          ta_mat_index_to_listing)
+                                                          ta_mat_index_to_listing,
+                                                          ta_svd_s,
+                                                          ta_svd_tt,
+                                                          ta_word_to_index,
+                                                          ta_index_to_word)
     else:
         ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
         listings, indices, scores, related_words = search_lda(query,
-                                                              ta_vectorizer,
-                                                              ta_lda_ht,
-                                                              ta_lda_tt,
-                                                              ta_mat_index_to_listing)
+                                                          ta_vectorizer,
+                                                          ta_lda_ht,
+                                                          ta_lda_tt,
+                                                          ta_mat_index_to_listing,
+                                                          ta_svd_s,
+                                                          ta_svd_tt,
+                                                          ta_word_to_index,
+                                                          ta_index_to_word)
     return related_words
 
