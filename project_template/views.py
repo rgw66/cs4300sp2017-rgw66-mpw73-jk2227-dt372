@@ -15,6 +15,7 @@ def index(request):
     words=json.load(open("jsons/words.json"))
     airbnb_output = []
     hotel_output = []
+    overall_output = []
     query = ''
     if request.GET.get('search'):
         query = request.GET.get('search')
