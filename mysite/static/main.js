@@ -37,7 +37,13 @@ var wc_selection = function(e){
 var refine_words = function(){
     if ($.trim($("#hotel_refine").html()) == "") {
         $.ajax({
-            url: "/pt/refine", success: function (result) {
+            url: "/pt/refine",
+            type:"GET",
+            data: {
+                words: selected_words.join(" ")
+            },
+            success: function (result) {
+                $("#refine_form").slideUp("slow", function(){});
                 var hotel_words = result['hotel_words'];
                 var airbnb_words = result['airbnb_words'];
                 hotel_words.forEach(function (d) {
@@ -100,8 +106,6 @@ var change_list = function(e){
 
 $(document).ready(function(){
     d3.selectAll('.sentiments').each(function(){
-        console.log(parseInt(this.innerHTML));
-
         this.style = "background-color: " + color(this.innerHTML) + ";"
     });
 });

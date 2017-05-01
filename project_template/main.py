@@ -89,7 +89,7 @@ def get_reviews(site,ind_lst):
     return unscrambled_reviews #reviews
 
 
-def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k = 10, listing_type="total"):
+def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k = 10):
     related_words = []
     for q in query.split():
         related_words += closest_words(q, total_svd_s, total_svd_tt)
@@ -191,7 +191,7 @@ def get_hotel_results(query):
             'max_sent_review': "", # max_review,
             'avg_sent_score': avg_sent,
             'sent_scores': sent_scores,
-            'rating': ta_listings[name][1]
+            'rating': ta_listings[name][1]*20
         })
 
     del ta_vectorizer
@@ -205,5 +205,27 @@ def get_hotel_results(query):
 
     return ordered_listings
 
-
+def get_closest_words(listing_type, query):
+    if listing_type == "airbnb":
+        airbnb_vectorizer = pickle.load(open("data/airbnb_vectorizer.pickle", "rb"))
+        listings, indices, scores, related_words = search_lda(query,
+                                                              airbnb_vectorizer,
+                                                              airbnb_lda_ht,
+                                                              airbnb_lda_tt,
+                                                              airbnb_mat_index_to_listing)
+    elif listing_type == "hotel":
+        ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
+        listings, indices, scores, related_words = search_lda(query,
+                                                          ta_vectorizer,
+                                                          ta_lda_ht,
+                                                          ta_lda_tt,
+                                                          ta_mat_index_to_listing)
+    else:
+        ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
+        listings, indices, scores, related_words = search_lda(query,
+                                                              ta_vectorizer,
+                                                              ta_lda_ht,
+                                                              ta_lda_tt,
+                                                              ta_mat_index_to_listing)
+    return related_words
 
