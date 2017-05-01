@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from .models import Docs
 from django.template import loader
 from .form import QueryForm
-from main import get_airbnb_results, get_hotel_results
+from main import get_airbnb_results, get_hotel_results, get_closest_words
 from django.http import JsonResponse
 import json
 # from .test import get_hotel_results, get_hotel_tuples, get_airbnb_tuples, get_airbnb_results
@@ -49,7 +49,8 @@ def index(request):
                            })
 
 def refine(request):
-    hotel_words = ['clean', 'clean', 'clean']
-    airbnb_words= ['nice', 'nice', 'nice']
+    # print request.GET.get('words')
+    hotel_words = get_closest_words("hotel", request.GET.get('words'))
+    airbnb_words = get_closest_words("airbnb", request.GET.get('words'))
     return JsonResponse({"hotel_words":hotel_words,
                          "airbnb_words":airbnb_words})
