@@ -108,4 +108,9 @@ $(document).ready(function(){
     d3.selectAll('.sentiments').each(function(){
         this.style = "background-color: " + color(this.innerHTML) + ";"
     });
+
+    $('.toggle-review').on('click', function() {  
+        $(this).children('.review').toggle();
+    });
+
 });

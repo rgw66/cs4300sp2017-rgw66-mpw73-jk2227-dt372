@@ -175,3 +175,10 @@ https://codepen.io/Bluetidepro/pen/GkpEa?editors=1100
 /**
 end adaptation
 */
+
+
+.toggle-review{
+    border: solid;
+    margin: 7px;
+    padding: 7px;
+}
