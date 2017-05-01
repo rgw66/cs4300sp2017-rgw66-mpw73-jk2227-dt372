@@ -13,8 +13,7 @@
         /*padding-bottom: 15px;*/
         text-align: center;
         "Helvetica Neue", Helvetica, Arial, sans-serif;
-        background-image: url("img/9qzBIpf.jpg");
-        background-attachment: fixed;
+        background-color: #79aec8;
     }
     .global-search {
         text-align:center;
@@ -30,9 +29,12 @@
 }
 .main{
     width: 80%;
-    opacity: .95;
+    min-height: 100%;
     background-color: white;
     margin: auto;
+}
+.main_bottom{
+    min-height: 800px;
 }
 .topcorner{
     position:relative;
@@ -88,11 +90,9 @@ color: #4285F4;
 /*airbnb and hotel tile styling*/
 .output {
     text-align: center;
-    width: 48%;
     margin: auto;
     display: inline-block;
     vertical-align: top;
-    float: left;
 }
 .tile {
     background-color: white;

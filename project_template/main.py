@@ -89,10 +89,16 @@ def get_reviews(site,ind_lst):
     return unscrambled_reviews #reviews
 
 
-def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k = 10):
+def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, top_k = 10, listing_type="total"):
     query_updated = []
     for q in query.split():
         query_updated += [q]
+        # if listing_type = "airbnb":
+        #     query_updated += [w[0] for w in closest_words(q, airbnb_svd_s, airbnb_svd_tt)]
+        # elif listing_type = "hotel":
+        #     query_updated += [w[0] for w in closest_words(q, hotel_svd_s, hotel_svd_tt)]
+        # else:
+        #     query_updated += [w[0] for w in closest_words(q, total_svd_s, total_svd_tt)]
         query_updated += [w[0] for w in closest_words(q, total_svd_s, total_svd_tt)]
     query_updated = " ".join(query_updated)
     print(query_updated)

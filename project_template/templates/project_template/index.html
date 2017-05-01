@@ -59,6 +59,7 @@
                 <button class="btn btn-info" onclick="refine_words()"> Go! </button>
             </div>
             <br/>
+
             {% if airbnb_output or hotel_output %}
             <h4>Winner:</h4>
             <p>{{ search }}</p><br/>
@@ -81,7 +82,9 @@
                     <br/>
             </a>
             <br/>
-                <br/>
+            <br/>
+
+
             <h5>Other places you might be interested in:</h5>
             <form id="list_select">
                 <input type="radio" name="type" value="hotel" onclick="change_list(event)">
@@ -92,97 +95,81 @@
                 <span class="check_label">-Overall </span>
             </form>
 
-            <div class="output" id="hotel_output" style="display: none">
-                <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
-            {% for line in hotel_output %}
-                <a href="{{ line.listing_url }}" class="tile" target="_blank">
-                    <div class="imgWrap">
-                        <img src="{{ line.image_url }}" class="tile_icon">
-                    </div>
-                    <br/>
-                    <b>{{ line.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ line.score }}</span>
-                    <br/>
+            <div class="main_bottom">
+                <div class="output" id="hotel_output" style="display: none">
+                    <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
+                    {% for line in hotel_output %}
+                    <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                        <div class="imgWrap">
+                            <img src="{{ line.image_url }}" class="tile_icon">
+                        </div>
+                        <br/>
+                        <b>{{ line.name }}</b><br/>
+                        Similarity Score:
+                            {{ line.score }}
+                        <br/>
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
+{#                        <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>#}
+{#                        <br>#}
+{#                        {{ line.max_sent_review }}#}
+{#                        <br>#}
+{#                        <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>#}
+{#                        <br>#}
+{#                        {{ line.min_sent_review }}</p>#}
 
-                    <p>{{ line.average_sent_score }}
-                    <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>
-                    <br>
-                    {{ line.max_sent_review }}
-                    <br>
-                    <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>
-                    <br>
-                    {{ line.min_sent_review }}</p>
+                        <br/>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="output" id="airbnb_output" style="display: none">
+                    <h3><font color="#ff5a5f">Airbnb</font></h3>
+                    {% for line in airbnb_output %}
+                    <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                        <div class="imgWrap">
+                            <img src="{{ line.image_url }}" class="tile_icon">
+                        </div>
+                        <br/>
+                        <b>{{ line.name }}</b><br/>
+                        Similarity Score:
+                        <span class="sentiments">
+                            {{ line.score }}</span>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="output" id="total_output" >
+                    <h3><font>Overall</font></h3>
+                    {% for line in hotel_output %}
+                    <a href="{{ line.listing_url }}" class="tile" target="_blank">
+                        <div class="imgWrap">
+                            <img src="{{ line.image_url }}" class="tile_icon">
+                        </div>
+                        <br/>
+                        <b>{{ line.name }}</b><br/>
+                        Similarity Score:
+                        <span class="sentiments">
+                            {{ line.score }}</span>
+                        <br/>
 
-                    <br/>
-                </a>
-            {% endfor %}
+                        <p>{{ line.average_sent_score }}
+                        <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>
+                        <br>
+                        {{ line.max_sent_review }}
+                        <br>
+                        <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>
+                        <br>
+                        {{ line.min_sent_review }}</p>
+
+                        <br/>
+                    </a>
+                    {% endfor %}
+
+                </div>
             </div>
-            <div class="output" id="airbnb_output" style="display: none">
-                <h3><font color="#ff5a5f">Airbnb</font></h3>
-                {% for line in airbnb_output %}
-                <a href="{{ line.listing_url }}" class="tile" target="_blank">
-                    <div class="imgWrap">
-                        <img src="{{ line.image_url }}" class="tile_icon">
-                    </div>
-                    <br/>
-                    <b>{{ line.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ line.score }}</span>
-                    <br/>
-                    <br/>
-                    <br/>
-                </a>
-                {% endfor %}
-            </div>
-            <div class="output" id="total_output" >
-                <h3><font color="#ff5a5f">Overall</font></h3>
-                {% for line in hotel_output %}
-                <a href="{{ line.listing_url }}" class="tile" target="_blank">
-                    <div class="imgWrap">
-                        <img src="{{ line.image_url }}" class="tile_icon">
-                    </div>
-                    <br/>
-                    <b>{{ line.name }}</b><br/>
-                    Similarity Score:
-                    <span class="sentiments">
-                        {{ line.score }}</span>
-                    <br/>
-
-                    <p>{{ line.average_sent_score }}
-                    <b>The Good: <span class="sentiments">{{ line.max_sent_score }}</span> </b>
-                    <br>
-                    {{ line.max_sent_review }}
-                    <br>
-                    <b>The Bad: <span class="sentiments">{{ line.min_sent_score }}</span> </b>
-                    <br>
-                    {{ line.min_sent_review }}</p>
-
-                    <br/>
-                </a>
-                {% endfor %}
-
-            </div>
-
-    {#            <div class="pagination">#}
-    {#                <span class="step-links">#}
-    {#                    {% if output.has_previous %}#}
-    {#                    <a href= "{{magic_url}}&page={{ output.previous_page_number }}">previous</a>#}
-    {#                    {% endif %}#}
-    {##}
-    {#                    <!-- Showing the page numbers in Html Page -->#}
-    {#                    <span class="current">#}
-    {#                    Page _{{ output.number }}_ of _{{ output.paginator.num_pages }}_#}
-    {#                    </span>#}
-    {##}
-    {#                    {% if output.has_next %}#}
-    {#                    <a href= "{{magic_url}}&page={{ output.next_page_number }}">next</a>#}
-    {#                    {% endif %}#}
-    {#                </span>#}
-    {#            </div>#}
-                {% endif %}
+            {% endif %}
             </div>
         </div>
     </body>
