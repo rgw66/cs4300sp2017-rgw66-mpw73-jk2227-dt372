@@ -15,6 +15,9 @@ def index(request):
     words=json.load(open("jsons/words.json"))
     airbnb_output = []
     hotel_output = []
+    hotel_bottom_output = []
+    airbnb_bottom_output = []
+    overall_bottom_output = []
     airbnb_sentscores = [] 
     hotel_sentscores = [] 
     overall_output = []
@@ -25,11 +28,15 @@ def index(request):
         query = request.GET.get('search')
         airbnb_output = get_airbnb_results(query)
         hotel_output = get_hotel_results(query)
+        airbnb_bottom_output = get_airbnb_results(query,bottom=True)
+        hotel_bottom_output = get_hotel_results(query,bottom=True)
+
         for airbnb_info in airbnb_output:
           airbnb_output_sentscores.extend(airbnb_info['sent_scores'])
         for hotel_info in hotel_output:
           hotel_output_sentscores.extend(hotel_info['sent_scores'])
         overall_output = get_overall_results(query)
+        overall_bottom_output = get_overall_results(query,bottom=True)
         for info in overall_output:
           if info['is_airbnb']:
             airbnb_sentscores.extend(info['sent_scores'])
@@ -41,6 +48,9 @@ def index(request):
                            'search': query,
                            'hotel_output': hotel_output,
                            'overall_output': overall_output,
+                           'hotel_bottom_output': hotel_bottom_output,
+                           'airbnb_bottom_output':airbnb_bottom_output,
+                           'overall_bottom_output': overall_bottom_output,
                            'magic_url': request.get_full_path(),
                            'words': words,
                            'hotel_sentscores': hotel_sentscores,

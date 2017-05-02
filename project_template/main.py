@@ -111,7 +111,7 @@ def get_reviews(site,ind_lst):
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, 
                svd_weights, svd_topics, word_to_index, index_to_word, 
-               hs, top_k = 10, bottom = False):
+               hs, top_k = 12, bottom = False):
     related_words = []
     for q in query.split():
         related_words += closest_words(q, svd_weights, svd_topics, word_to_index, index_to_word)
@@ -135,7 +135,7 @@ def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict,
         return (listings.tolist(), indices.tolist(), scores.tolist(), related_words)
 
 
-def get_airbnb_results(query):
+def get_airbnb_results(query, bottom=False):
     airbnb_vectorizer = pickle.load(open("data/airbnb_vectorizer.pickle", "rb"))
     listings, indices, scores, related_words = search_lda(query,
                                            airbnb_vectorizer,
@@ -146,7 +146,8 @@ def get_airbnb_results(query):
                                            airbnb_svd_tt,
                                            airbnb_word_to_index,
                                            airbnb_index_to_word,
-                                           airbnb_hs)
+                                           airbnb_hs,
+                                            bottom = bottom)
     ordered_listings = []
     min_max_indices = [] 
     for (l, ind, score) in zip(listings, indices, scores):
@@ -189,7 +190,7 @@ def get_airbnb_results(query):
     
     return ordered_listings
 
-def get_hotel_results(query):
+def get_hotel_results(query, bottom=False):
     ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
     hotel_images = pickle.load(open("data/hotel_images.pickle", "rb"))
     listings, indices, scores, related_words = search_lda(query,
@@ -201,12 +202,19 @@ def get_hotel_results(query):
                                            ta_svd_tt,
                                            ta_word_to_index,
                                            ta_index_to_word,
-                                           ta_hs)
+                                           ta_hs,
+                                            bottom=bottom)
     ordered_listings = []
     min_max_indices = [] 
 
+    total_listings = 0
     for (l, ind, score) in zip(listings, indices, scores):
         name = ta_index_to_listing[int(l)]
+        #We updated one of our pickle files but didn't want to update the others as a consequence...
+        if name == "Loews Regency New York Hotel " or name == "Royal Park Hotel ":
+            continue
+        if total_listings == 10:
+            continue
         indices_per_listing = tripadvisor_name_to_review_index[name]
         sent_scores_index_pairs = [(ta_sentscores[i], i) for i in indices_per_listing]
         sorted_sent_scores_index_pairs = sorted(sent_scores_index_pairs, key=lambda x : x[0])
@@ -231,6 +239,7 @@ def get_hotel_results(query):
             'sent_scores': sent_scores,
             'rating': ta_listings[name][1]*20
         })
+        total_listings+=1
 
     del ta_vectorizer
     del hotel_images
@@ -243,7 +252,7 @@ def get_hotel_results(query):
 
     return ordered_listings
 
-def get_overall_results(query):
+def get_overall_results(query, bottom=False):
     total_vectorizer = pickle.load(open("data/total_vectorizer.pickle", "rb"))
     hotel_images = pickle.load(open("data/hotel_images.pickle", "rb"))
     listings, indices, scores, related_words = search_lda(query,
@@ -255,7 +264,8 @@ def get_overall_results(query):
                                            total_svd_tt,
                                            total_word_to_index,
                                            total_index_to_word,
-                                           total_hs)
+                                           total_hs,
+                                            bottom=bottom)
     ordered_listings = []
     min_max_indices = [] 
 

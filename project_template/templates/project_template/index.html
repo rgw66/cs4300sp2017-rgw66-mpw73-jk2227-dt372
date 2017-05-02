@@ -291,7 +291,7 @@ var render_graph = function(elementId ,data) {
     }
 
     var formatCount = d3.format(",.0f");
-    var width = 460;
+    var width = 400;
     var height = 300; 
     var svg = d3.select(elementId).append("svg").attr("height", height).attr("width", width);
 
@@ -329,19 +329,6 @@ var render_graph = function(elementId ,data) {
             return d3.rgb("#589442");
         }
     } );
-
-{#    bar.append("text")#}
-{#    .attr("dy", ".75em")#}
-{#    .attr("y", 6)#}
-{#    .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)#}
-{#    .attr("text-anchor", "middle")#}
-{#    .text(function(d) { #}
-{#        if (d.length == 0) {#}
-{#            return "";#}
-{#        } else {#}
-{#            return formatCount(d.length); #}
-{#        }#}
-{#    });#}
 
     svg.append("g")
     .attr("class", "axis axis--x")
