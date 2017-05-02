@@ -135,7 +135,7 @@
                         <br/>
 
                         <div class="toggle-review">
-                            Show best review
+                            Show most positive review
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
                                 {{ line.max_sent_review }}
@@ -143,7 +143,7 @@
                         </div>
 
                         <div class="toggle-review">
-                            Show worst review
+                            Show most negative review
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
                                 {{ line.min_sent_review }}
@@ -186,7 +186,7 @@
                         <br/>
 
                         <div class="toggle-review">
-                            Show best review
+                            Show most positive review
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
                                 {{ line.max_sent_review }}
@@ -194,7 +194,7 @@
                         </div>
 
                         <div class="toggle-review">
-                            Show worst review
+                            Show most negative review
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
                                 {{ line.min_sent_review }}
@@ -240,7 +240,7 @@
                         <br/>
 
                         <div class="toggle-review">
-                            Show best review
+                            Show most positive review
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
                                 {{ line.max_sent_review }}
@@ -248,7 +248,7 @@
                         </div>
 
                         <div class="toggle-review">
-                            Show worst review
+                            Show most negative review
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
                                 {{ line.min_sent_review }}
@@ -335,6 +335,34 @@ var render_graph = function(elementId ,data) {
     .attr("class", "axis axis--x")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x));
+
+    svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "start")
+    .attr("x", 0)
+    .attr("y", height + 30)
+    .text("Negative Reviews");
+
+    svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", height + 30)
+    .text("Positive Reviews");
+
+    if(elementId == "#airbnb_graph"){
+        title = "Airbnb Review Sentiments"
+    }
+    else{
+        title = "TripAdvisor Review Sentiments"
+    }
+
+    svg.append("text")
+    .attr("x", width/2)             
+    .attr("y", 30)
+    .attr("text-anchor", "middle")  
+    .style("font-size", "16px") 
+    .text(title);
 }; 
 
 var parse_django_var = function(name) {
