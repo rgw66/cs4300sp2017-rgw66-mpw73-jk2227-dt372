@@ -129,3 +129,8 @@ $(document).ready(function(){
         curr_text = $(this).children('.show-hide').text(new_text); 
     });
 });
+
+
+
+
+
