@@ -29,7 +29,7 @@ CLIENT = boto3.client('s3')
 
 def get_hotel_reviews(site, hotel_ind):
     indices = None
-    if (site == ‘airbnb’):
+    if (site == 'airbnb'):
         indices = sparse.find(airbnb_adj_mat[hotel_ind, :])[1]
     else:
         indices = sparse.find(ta_adj_mat[hotel_ind, :])[1]
