@@ -323,7 +323,7 @@ def get_overall_results(query, bottom=False):
                 'max_sent_review': "", # max_review,
                 'avg_sent_score': "{0:.3f}".format(round(tripadvisor_name_to_sent_avg[name],4)),
                 'sent_scores': sent_scores,
-                'rating': ta_listings[name][1],
+                'rating': ta_listings[name][1] * 20,
                 'is_airbnb': False
             })
     del total_vectorizer
