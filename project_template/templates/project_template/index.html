@@ -215,7 +215,7 @@
                     <h3><font>Overall</font></h3>
                     <div>
                         <p class="explain">
-                            The following graph shows the distribution of sentiments of reviews that were retrieved by our IR system that was trained on both hotel and AirBnB reviews. Note that because there are only 76 hotel listings and 23714 AirBnB listings, this IR system component tends to predominantly retrieve Airbnb reviews. Select the Hotel or AirBnB options to see type filtered IR system.   
+                            The following graph(s) shows the distribution of sentiments of reviews that were retrieved by our IR system that was trained on both hotel and AirBnB reviews. Note that because there are only 76 hotel listings and 23714 AirBnB listings, this IR system component tends to predominantly retrieve Airbnb reviews. Select the Hotel or AirBnB options to see type filtered IR system.   
                         </p>
                         <div id="hotel_graph"></div>
                         <div id="airbnb_graph"></div>
@@ -347,6 +347,11 @@ var render_graph = function(elementId ,data) {
     .attr("class", "axis axis--x")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x));
+
+    svg.append("g")
+    .attr("class", "axis axis--y")
+    .attr("transform", "translate(" + 0 + ",0)")
+    .call(d3.axisLeft(y));
 
     svg.append("text")
     .attr("class", "x label")
