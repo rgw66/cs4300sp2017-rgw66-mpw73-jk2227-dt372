@@ -201,3 +201,8 @@ end adaptation
 .toggle-review:hover {
     cursor: pointer;
 }
+
+.explain{
+    margin-left: 200px;
+    margin-right: 200px;
+}
