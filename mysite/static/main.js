@@ -100,14 +100,10 @@ var show_words = function(e){
 };
 
 var change_list = function(e){
-    if (e.target.value == "hotel"){
-        $("#airbnb_output").fadeOut(300);
+    if (e.target.value == "hotel-airbnb"){
+        $("#airbnb_output").delay(300).fadeIn(300);
         $("#total_output").fadeOut(300);
         $("#hotel_output").delay(300).fadeIn(200);
-    }else if (e.target.value == "airbnb"){
-        $("#total_output").fadeOut(300);
-        $("#hotel_output").fadeOut(300);
-        $("#airbnb_output").delay(300).fadeIn(200);
     }else{
         $("#airbnb_output").fadeOut(300);
         $("#hotel_output").fadeOut(300);

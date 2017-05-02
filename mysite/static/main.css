@@ -105,6 +105,7 @@ color: #4285F4;
     margin: auto;
     display: inline-block;
     vertical-align: top;
+    width: 48%;
 }
 .tile {
     background-color: white;
@@ -118,7 +119,7 @@ color: #4285F4;
     border-radius: 10px;
     margin: 2px;
     padding: 10px;
-    background-color: white;
+    min-height: 350px;
 }
 .tile_icon {
     width: auto;
