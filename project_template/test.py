@@ -4,14 +4,8 @@ import json
 import pickle
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-import nltk
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-try: 
-	sid = SentimentIntensityAnalyzer()
-except: 
-	nltk.download("vader_lexicon")
-	sid = SentimentIntensityAnalyzer()
+
 
 def get_hotel_tuples(hotel_information, ta_reviews):
 	hotel_to_key_index = {} 
@@ -58,14 +52,6 @@ def get_airbnb_results(query, airbnb_reviews, airbnb_listings, index_to_listing,
 	for (l, ind, score) in zip(listings, indices, scores):
 		listing_id = str(int(l))
 		airbnb_listing_info = airbnb_listings[listing_id]
-		print "Listing ID: " + listing_id 
-		print "Listing Name: " + airbnb_listing_info['name']
-		print "Review : \n" + airbnb_reviews[ind]
-		print "Listing URL: " + airbnb_listing_info['listing_url']
-		print "Image URL: " + airbnb_listing_info['picture_url']
-		print "Score (Similarity): " + str(score)
-		print sid.polarity_scores(airbnb_reviews[ind])['compound']
-		print "**************"
 		airbnb_results.append({
 			"id": listing_id, 
 			"name": airbnb_listing_info['name'],
@@ -73,7 +59,7 @@ def get_airbnb_results(query, airbnb_reviews, airbnb_listings, index_to_listing,
 			"listing_url": airbnb_listing_info['listing_url'],
 			"image_url": airbnb_listing_info['picture_url'],
 			"score": score,
-			"sentiment_analysis_score": sid.polarity_scores(airbnb_reviews[ind])['compound']
+			"sentiment_analysis_score": 0
 			});
 	return airbnb_results 
 
@@ -85,14 +71,7 @@ def get_hotel_results(query, ta_reviews, hotel_information, index_to_hotel, vect
 		hotel_id = int(l)
 		review_info = ta_reviews[ind]
 		hotel_info = hotel_information[hotel_keys[hotel_id]]
-		print "Hotel ID: %i" % hotel_id
-		print "Hotel name: " + hotel_keys[hotel_id]
-		print "Review Title: " + review_info['title']
-		print "Review: \n" + review_info['review']
-		print "Hotel URL: " + hotel_info[0]
-		print "Score (Similarity): " + str(score)
-		print sid.polarity_scores(review_info['review'])['compound']
-		print "**************"
+
 		hotel_results.append({
 			"id": hotel_id,
 			"name": hotel_keys[hotel_id],
@@ -100,7 +79,7 @@ def get_hotel_results(query, ta_reviews, hotel_information, index_to_hotel, vect
 			"review": review_info['review'],
 			"listing_url": hotel_info[0],
 			"score": score,
-			"sentiment_analysis_score": sid.polarity_scores(review_info['review'])['compound']
+			"sentiment_analysis_score": 0
 			});
 	return hotel_results
 
