@@ -49,6 +49,9 @@
     border: none;
     text-align: center;
 }
+.bold {
+    font-weight: 500;
+}
 .submit_button{
     text-align: center;
 }
@@ -203,6 +206,5 @@ end adaptation
 }
 
 .explain{
-    margin-left: 200px;
-    margin-right: 200px;
+    margin: auto;
 }
