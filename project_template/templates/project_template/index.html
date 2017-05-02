@@ -272,9 +272,10 @@
 </style>
 <script type="text/javascript"> 
 var render_graph = function(elementId ,data) { 
-    if (data.length == 0) {
+    if (data.length <= 1) {
         return;
     }
+
     var formatCount = d3.format(",.0f");
     var width = 460;
     var height = 300; 
@@ -309,9 +310,9 @@ var render_graph = function(elementId ,data) {
     .attr("height", function(d) { return height - y(d.length); })
     .attr("fill", function(d) { 
         if (elementId == "#airbnb_graph") {
-            return d3.rgb("#F4002D");
+            return d3.rgb("#FF5a5F");
         } else {
-            return d3.rgb("#1AF40A");
+            return d3.rgb("#589442");
         }
     } );
 
@@ -337,6 +338,7 @@ var render_graph = function(elementId ,data) {
    var airbnb_sentscores = "{{airbnb_sentscores}}";
    airbnb_sentscores = airbnb_sentscores.substring(1, airbnb_sentscores.length-1).split(",").map(function (e) { return parseFloat(e); });
    var hotel_sentscores = "{{hotel_sentscores}}";
+   console.log(hotel_sentscores)
    hotel_sentscores = hotel_sentscores.substring(1, hotel_sentscores.length-1).split(",").map(function (e) { return parseFloat(e); });
    render_graph("#airbnb_graph", airbnb_sentscores);
    render_graph("#hotel_graph", hotel_sentscores);
