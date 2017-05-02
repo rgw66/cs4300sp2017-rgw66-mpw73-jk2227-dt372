@@ -45,6 +45,10 @@ airbnb_index_to_word = {i:t for t,i in airbnb_word_to_index.iteritems()}
 total_word_to_index = total_vectorizer.vocabulary_
 total_index_to_word = {i:t for t,i in total_word_to_index.iteritems()}
 
+ta_hs = pickle.load(open("data/ta_hs.pickle", "rb"))
+airbnb_hs = pickle.load(open("data/airbnb_hs.pickle", "rb"))
+total_hs = pickle.load(open("data/total_hs.pickle", "rb"))
+
 BUCKET_NAME = 'cs4300-dream-team'
 S3 = boto3.resource('s3')
 CLIENT = boto3.client('s3')
@@ -106,7 +110,8 @@ def get_reviews(site,ind_lst):
 
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, 
-               svd_weights, svd_topics, word_to_index, index_to_word, top_k = 10):
+               svd_weights, svd_topics, word_to_index, index_to_word, 
+               hs, top_k = 10):
     related_words = []
     for q in query.split():
         related_words += closest_words(q, svd_weights, svd_topics, word_to_index, index_to_word, k=10)
@@ -114,7 +119,7 @@ def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict,
     related_words = [w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)[:10]]
     # print(related_words)
     vec = vectorizer.transform([query]).todense().T
-    results = np.dot(ht_mat, normalize(np.dot(tt_mat, vec), axis = 0)).T
+    results = np.multiply(np.dot(ht_mat, normalize(np.dot(tt_mat, vec), axis = 0)).T, hs)
     indices = np.squeeze(np.asarray(np.argsort(results)))[::-1].T[:top_k]
     scores = np.squeeze(np.asarray(np.sort(results)))[::-1].T[:top_k]    
     listings = np.zeros(indices.shape)
@@ -133,7 +138,8 @@ def get_airbnb_results(query):
                                            airbnb_svd_s,
                                            airbnb_svd_tt,
                                            airbnb_word_to_index,
-                                           airbnb_index_to_word)
+                                           airbnb_index_to_word,
+                                           airbnb_hs)
     ordered_listings = []
     min_max_indices = [] 
     for (l, ind, score) in zip(listings, indices, scores):
@@ -187,7 +193,8 @@ def get_hotel_results(query):
                                            ta_svd_s,
                                            ta_svd_tt,
                                            ta_word_to_index,
-                                           ta_index_to_word)
+                                           ta_index_to_word,
+                                           ta_hs)
     ordered_listings = []
     min_max_indices = [] 
 
@@ -240,7 +247,8 @@ def get_overall_results(query):
                                            total_svd_s,
                                            total_svd_tt,
                                            total_word_to_index,
-                                           total_index_to_word)
+                                           total_index_to_word,
+                                           total_hs)
     ordered_listings = []
     min_max_indices = [] 
 
@@ -326,7 +334,8 @@ def get_closest_words(listing_type, query):
                                                               airbnb_svd_s,
                                                               airbnb_svd_tt,
                                                               airbnb_word_to_index,
-                                                              airbnb_index_to_word)
+                                                              airbnb_index_to_word,
+                                                              airbnb_hs)
     elif listing_type == "hotel":
         ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
         listings, indices, scores, related_words = search_lda(query,
@@ -337,7 +346,8 @@ def get_closest_words(listing_type, query):
                                                           ta_svd_s,
                                                           ta_svd_tt,
                                                           ta_word_to_index,
-                                                          ta_index_to_word)
+                                                          ta_index_to_word,
+                                                          ta_hs)
     else:
         ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
         listings, indices, scores, related_words = search_lda(query,
@@ -348,6 +358,7 @@ def get_closest_words(listing_type, query):
                                                           ta_svd_s,
                                                           ta_svd_tt,
                                                           ta_word_to_index,
-                                                          ta_index_to_word)
+                                                          ta_index_to_word,
+                                                          ta_hs)
     return related_words
 
