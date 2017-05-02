@@ -350,7 +350,7 @@ var render_graph = function(elementId ,data) {
     .attr("y", height + 30)
     .text("Positive Reviews");
 
-    if(elementId == "#airbnb_graph"){
+    if(elementId.includes("airbnb")) {
         title = "Airbnb Review Sentiments"
     }
     else{
