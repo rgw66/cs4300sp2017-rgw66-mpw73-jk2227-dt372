@@ -119,5 +119,18 @@ $(document).ready(function(){
 
     $('.toggle-review').on('click', function() {  
         $(this).children('.review').toggle();
+        curr_text = $(this).children('.show-hide').text(); 
+        if (curr_text.indexOf('Show') > -1){
+            new_text = curr_text.replace("Show", "Hide");
+        }
+        else{
+            new_text = new_text.replace("Hide", "Show");
+        }
+        curr_text = $(this).children('.show-hide').text(new_text); 
     });
 });
+
+
+
+
+
