@@ -295,13 +295,13 @@ var render_graph = function(elementId ,data) {
     var height = 300; 
     var svg = d3.select(elementId).append("svg").attr("height", height).attr("width", width);
 
-    margin = {top: 10, right: 30, bottom: 30, left: 30},
+    margin = {top: 10, right: 5, bottom: 30, left: 35},
     width = +width - margin.left - margin.right,
     height = +height - margin.top - margin.bottom,
     svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var x = d3.scaleLinear().domain([-1, 1])
-    .rangeRound([0, width]);
+    .rangeRound([margin.left, width]);
 
     var bins = d3.histogram()
     .domain(x.domain())
@@ -310,7 +310,7 @@ var render_graph = function(elementId ,data) {
 
     var y = d3.scaleLinear()
     .domain([0, d3.max(bins, function(d) { return d.length; })])
-    .range([height, 0]);
+    .range([height, margin.top]);
 
     var bar = svg.append("g").selectAll(".bar")
     .data(bins)
@@ -330,18 +330,18 @@ var render_graph = function(elementId ,data) {
         }
     } );
 
-    bar.append("text")
-    .attr("dy", ".75em")
-    .attr("y", 6)
-    .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
-    .attr("text-anchor", "middle")
-    .text(function(d) { 
-        if (d.length == 0) {
-            return "";
-        } else {
-            return formatCount(d.length); 
-        }
-    });
+{#    bar.append("text")#}
+{#    .attr("dy", ".75em")#}
+{#    .attr("y", 6)#}
+{#    .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)#}
+{#    .attr("text-anchor", "middle")#}
+{#    .text(function(d) { #}
+{#        if (d.length == 0) {#}
+{#            return "";#}
+{#        } else {#}
+{#            return formatCount(d.length); #}
+{#        }#}
+{#    });#}
 
     svg.append("g")
     .attr("class", "axis axis--x")
@@ -350,7 +350,7 @@ var render_graph = function(elementId ,data) {
 
     svg.append("g")
     .attr("class", "axis axis--y")
-    .attr("transform", "translate(" + 0 + ",0)")
+    .attr("transform", "translate(" + margin.left + "," + 0 +")")
     .call(d3.axisLeft(y));
 
     svg.append("text")
