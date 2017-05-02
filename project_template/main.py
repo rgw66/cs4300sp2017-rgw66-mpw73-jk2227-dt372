@@ -341,41 +341,20 @@ def get_overall_results(query, bottom=False):
     return ordered_listings
 
 def get_closest_words(listing_type, query):
+    related_words = []
     if listing_type == "airbnb":
-        airbnb_vectorizer = pickle.load(open("data/airbnb_vectorizer.pickle", "rb"))
-        listings, indices, scores, related_words = search_lda(query,
-                                                              airbnb_vectorizer,
-                                                              airbnb_lda_ht,
-                                                              airbnb_lda_tt,
-                                                              airbnb_mat_index_to_listing,
-                                                              airbnb_svd_s,
-                                                              airbnb_svd_tt,
-                                                              airbnb_word_to_index,
-                                                              airbnb_index_to_word,
-                                                              airbnb_hs)
+        for q in query.split():
+            related_words += closest_words(q, airbnb_svd_s, airbnb_svd_tt, airbnb_word_to_index, airbnb_index_to_word)
+        related_words = list(set([w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)]))[:min(len(related_words), 10)]
+
     elif listing_type == "hotel":
-        ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
-        listings, indices, scores, related_words = search_lda(query,
-                                                          ta_vectorizer,
-                                                          ta_lda_ht,
-                                                          ta_lda_tt,
-                                                          ta_mat_index_to_listing,
-                                                          ta_svd_s,
-                                                          ta_svd_tt,
-                                                          ta_word_to_index,
-                                                          ta_index_to_word,
-                                                          ta_hs)
+        for q in query.split():
+            related_words += closest_words(q, ta_svd_s, ta_svd_tt, ta_word_to_index, ta_index_to_word)
+        related_words = list(set([w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)]))[:min(len(related_words), 10)]
     else:
         ta_vectorizer = pickle.load(open("data/ta_vectorizer.pickle", "rb"))
-        listings, indices, scores, related_words = search_lda(query,
-                                                          ta_vectorizer,
-                                                          ta_lda_ht,
-                                                          ta_lda_tt,
-                                                          ta_mat_index_to_listing,
-                                                          ta_svd_s,
-                                                          ta_svd_tt,
-                                                          ta_word_to_index,
-                                                          ta_index_to_word,
-                                                          ta_hs)
+        for q in query.split():
+            related_words += closest_words(q, ta_svd_s, ta_svd_tt, ta_word_to_index, ta_index_to_word)
+        related_words = list(set([w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)]))[:min(len(related_words), 10)]
     return related_words
 
