@@ -17,8 +17,8 @@ ta_lda_tt = pickle.load(open("data/ta_lda_tt.mat"))
 airbnb_lda_ht = pickle.load(open("data/airbnb_lda_ht.mat"))
 airbnb_lda_tt = pickle.load(open("data/airbnb_lda_tt.mat"))
 
-ta_adj_mat = pickle.load(open("ta_adj_mat.pickle"))
-airbnb_adj_mat = pickle.load(open("airbnb_adj_mat.pickle"))
+ta_adj_mat = pickle.load(open("data/ta_adj_mat.pickle"))
+airbnb_adj_mat = pickle.load(open("data/airbnb_adj_mat.pickle"))
 
 BUCKET_NAME = 'cs4300-dream-team'
 S3 = boto3.resource('s3')
