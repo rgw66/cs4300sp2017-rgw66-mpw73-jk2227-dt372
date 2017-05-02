@@ -46,6 +46,8 @@
                     <button type='button' class="btn btn-info" onclick="refine_words()"> Refine Search </button>
                 </div>
                 <br/>
+                <p>Optionally add additional related search terms based on what you've selected.</p>
+                <br/>
                 <div id="refine_form" style='display:none;'>
                     <br/>
                     <h5>Refine Your Search</h5>
@@ -58,6 +60,8 @@
                     </div>
     {#            <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">#}
                 </div>
+                <br />
+                <p>Otherwise feel free to search as is.</p>
                 <br/>
                 <div class="submit_button" id="submit_button">
                     <button type='submit' class="btn btn-info"> Submit </button>
@@ -137,7 +141,7 @@
                         <br/>
 
                         <div class="toggle-review">
-                            Show most positive review
+                            <p class="show-hide">Show most positive review</p>
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
                                 {{ line.max_sent_review }}
@@ -145,7 +149,7 @@
                         </div>
 
                         <div class="toggle-review">
-                            Show most negative review
+                            <p class="show-hide">Show most negative review</p>
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
                                 {{ line.min_sent_review }}
@@ -192,7 +196,7 @@
                         <br/>
 
                         <div class="toggle-review">
-                            Show most positive review
+                            <p class="show-hide">Show most positive review</p>
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
                                 {{ line.max_sent_review }}
@@ -200,7 +204,7 @@
                         </div>
 
                         <div class="toggle-review">
-                            Show most negative review
+                            <p class="show-hide">Show most negative review</p>
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
                                 {{ line.min_sent_review }}
@@ -252,7 +256,7 @@
                         <br/>
 
                         <div class="toggle-review">
-                            Show most positive review
+                            <p class="show-hide">Show most positive review</p>
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
                                 {{ line.max_sent_review }}
@@ -260,7 +264,7 @@
                         </div>
 
                         <div class="toggle-review">
-                            Show most negative review
+                            <p class="show-hide">Show most negative review</p>
                             <div class="review" style="display: none">
                                 Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
                                 {{ line.min_sent_review }}
