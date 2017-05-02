@@ -4,81 +4,63 @@ from django.http import HttpResponse
 from .models import Docs
 from django.template import loader
 from .form import QueryForm
-from .test import get_hotel_results, get_hotel_tuples, get_airbnb_tuples, get_airbnb_results
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from main import get_airbnb_results, get_hotel_results, get_closest_words, get_overall_results
+from django.http import JsonResponse
 import json
-import cPickle as pickle
-from scipy.sparse.linalg import svds
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-
-with open('data/tripadvisor_reviews.pickle','rb') as f:
-  ta_reviews_data = pickle.load(f)
-
-with open('data/tripadvisor_hotel_info.pickle','rb') as f:
-  hotel_information = pickle.load(f)
-
-(hotel_to_key_index, index_to_hotel, ta_reviews) = get_hotel_tuples(hotel_information, ta_reviews_data)
-
-ta_vectorizer = TfidfVectorizer(stop_words='english', max_df = 0.7)
-ta_tfidf = ta_vectorizer.fit_transform(ta_reviews)
-
-#words_compressed_ta, _, docs_compressed_ta = svds(ta_tfidf, k=10)
-docs_compressed_ta, _, words_compressed_ta = svds(ta_tfidf, k=10)
-docs_compressed_ta = docs_compressed_ta.T
-words_compressed_ta = words_compressed_ta.T
-
-#with open('data/10_by_docs_svd_ta.pickle','rb') as f:
-#  words_compressed_ta = pickle.load(f) 
-
-#with open('data/words_by_10_svd_ta.pickle','rb') as f:
-#  docs_compressed_ta = pickle.load(f) 
-
-with open('data/airbnb_reviews.pickle','rb') as f:
- airbnb_reviews_data = pickle.load(f)
-
-with open('data/airbnb_listings.pickle','rb') as f:
- listings_information = pickle.load(f)
-
-(index_to_listing, airbnb_reviews) = get_airbnb_tuples(airbnb_reviews_data)
-
-airbnb_vectorizer = TfidfVectorizer(stop_words='english', max_df = 0.7)
-airbnb_tfidf = airbnb_vectorizer.fit_transform(airbnb_reviews)
-
-docs_compressed_airbnb, _, words_compressed_airbnb = svds(airbnb_tfidf, k=10)
-docs_compressed_airbnb = docs_compressed_airbnb.T
-words_compressed_airbnb = words_compressed_airbnb.T
+# from .test import get_hotel_results, get_hotel_tuples, get_airbnb_tuples, get_airbnb_results
+# from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 def index(request):
     words=json.load(open("jsons/words.json"))
     airbnb_output = []
     hotel_output = []
+    hotel_bottom_output = []
+    airbnb_bottom_output = []
+    overall_bottom_output = []
+    airbnb_sentscores = [] 
+    hotel_sentscores = [] 
+    overall_output = []
+    hotel_output_sentscores = []
+    airbnb_output_sentscores = []
     query = ''
     if request.GET.get('search'):
-      query = request.GET.get('search')
+        query = request.GET.get('search')
+        airbnb_output = get_airbnb_results(query)
+        hotel_output = get_hotel_results(query)
+        airbnb_bottom_output = get_airbnb_results(query,bottom=True)
+        hotel_bottom_output = get_hotel_results(query,bottom=True)
 
-      hotel_output = get_hotel_results(query, ta_reviews_data, hotel_information, index_to_hotel, ta_vectorizer, words_compressed_ta, docs_compressed_ta)
-      airbnb_output = get_airbnb_results(query, airbnb_reviews, listings_information, index_to_listing, airbnb_vectorizer, words_compressed_airbnb, docs_compressed_airbnb)
+        for airbnb_info in airbnb_output:
+          airbnb_output_sentscores.extend(airbnb_info['sent_scores'])
+        for hotel_info in hotel_output:
+          hotel_output_sentscores.extend(hotel_info['sent_scores'])
+        overall_output = get_overall_results(query)
+        overall_bottom_output = get_overall_results(query,bottom=True)
+        for info in overall_output:
+          if info['is_airbnb']:
+            airbnb_sentscores.extend(info['sent_scores'])
+          else:
+            hotel_sentscores.extend(info['sent_scores'])
 
-      print hotel_output[0]
-      print airbnb_output[0]
-        #hotel_output = hotel_list
-        #airbnb_output = airbnb_list
-        # search = request.GET.get('search')
-        # output_list = find_similar(search)
-        # paginator = Paginator(output_list, 10)
-        # page = request.GET.get('page')
-        #
-        # try:
-        #     output = paginator.page(page)
-        # except PageNotAnInteger:
-        #     output = paginator.page(1)
-        # except EmptyPage:
-        #     output = paginator.page(paginator.num_pages)
     return render_to_response('project_template/index.html',
                           {'airbnb_output': airbnb_output,
                            'search': query,
                            'hotel_output': hotel_output,
+                           'overall_output': overall_output,
+                           'hotel_bottom_output': hotel_bottom_output,
+                           'airbnb_bottom_output':airbnb_bottom_output,
+                           'overall_bottom_output': overall_bottom_output,
                            'magic_url': request.get_full_path(),
                            'words': words,
+                           'hotel_sentscores': hotel_sentscores,
+                           'airbnb_sentscores': airbnb_sentscores,
+                           'hotel_output_sentscores': hotel_output_sentscores,
+                           'airbnb_output_sentscores': airbnb_output_sentscores
                            })
+
+def refine(request):
+    hotel_words = get_closest_words("hotel", request.GET.get('words'))
+    airbnb_words = get_closest_words("airbnb", request.GET.get('words'))
+    return JsonResponse({"hotel_words":hotel_words,
+                         "airbnb_words":airbnb_words})

@@ -7,96 +7,384 @@
         <script src="https://d3js.org/d3.v4.min.js"></script>
         <script src="{% static 'main.js' %}"></script>
 
+
     </head>
     
     <body>
-        <!-- TODO: Please change lines 10 and 11 according to your actual project name and student names-->
-        <div class="topcorner">
-            <p>Airbnb vs Hotels</p>
-            <p>Dilip Thiagarajan (dt372) , Ji Hun Kim (jk2227) , Matt White (mpw73) , Rudy Winkler (rgw66)</p>
-        </div>
-        <h1 style="font-size: 55px; font-family:Futura; color: #626262">
-                        <font color="black">Ho</font><font color="#589442">tel</font>
-                         or
-                        <font color="#ff5a5f">Airbnb</font>?
-        </h1>
-        {% if not airbnb_output %}
-        <div id="main_head">
-        {% else %}
-        <div style="display: none" id="main_head">
-        {% endif %}
-            <button class="btn btn-info" onclick="show_words(event)"> Start Search </button>
-        </div>
-        {% if airbnb_output or hotel_output %}
-        <div id="main_page">
-        {% else %}
-        <div style="display: none" id="main_page">
-        {% endif %}
+        <div class="main">
+            <div class="topcorner">
+                <p>Dilip Thiagarajan (dt372) , Ji Hun Kim (jk2227) , Matt White (mpw73) , Rudy Winkler (rgw66)</p>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <h1 style="font-size: 55px; font-family:Futura; color: #626262">
+                            <font color="black">Ho</font><font color="#589442">tel</font>
+                             or
+                            <font color="#ff5a5f">Airbnb</font>?
+            </h1>
+            {% if not airbnb_output %}
+            <div id="main_head">
+            {% else %}
+            <div style="display: none" id="main_head">
+            {% endif %}
+                <button class="btn btn-info" onclick="show_words(event)"> Start Search </button>
+            </div>
+            {% if airbnb_output or hotel_output %}
+            <div id="main_page">
+            {% else %}
+            <div style="display: none" id="main_page">
+            {% endif %}
             <form class="form-inline global-search" method='GET' id="wc_form">
                 <div class="word_cloud">
                 {% for  word in words %}
                     <span class="wc_word" id="{{ word }}" onclick="wc_selection(event)">{{ word }}</span>
                 {% endfor %}
-                <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">
                 </div>
-            </form>
-            <div class="submit_button" id="submit_button">
-                <button class="btn btn-info" onclick="submit_form()"> Go! </button>
-            </div>
+                <br/>
+                <div class="submit_button" id="submit_button">
+                    <button type='button' class="btn btn-info" onclick="refine_words()"> Refine Search </button>
+                </div>
+                <br/>
+                <p>Optionally add additional related search terms based on what you've selected.</p>
+                <br/>
+                <div id="refine_form" style='display:none;'>
+                    <br/>
+                    <h5>Refine Your Search</h5>
+                    <br/>
+                    <p>Select a box that is best for you</p>
+                    <br/>
+                    <div class="refine_word_cloud" id="hotel_refine" onclick="submit_form(event)">
+                    </div>
+                    <div class="refine_word_cloud" id="airbnb_refine" onclick="submit_form(event)">
+                    </div>
+    {#            <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">#}
+                </div>
+                <br />
+                <p>Otherwise feel free to search as is.</p>
+                <br/>
+                <div class="submit_button" id="submit_button">
+                    <button type='submit' class="btn btn-info"> Submit </button>
+                </div>
             <br/>
-            {% if airbnb_output or hotel_output %}
-            <h4>Results For:</h4>
-            <p>{{ search }}</p><br/>
-            <div class="output">
-                <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
-            {% for line in hotel_output %}
-                <a href="{{ line.listing_url }}" class="tile" target="_blank">
-                    <img src="{% static 'img/tripadvisor1600.png'%}" class="tile_icon">
-                    <b>{{ line.name }}</b><br/>
-                    Sentiment:
-                    <span class="sentiments">
-                        {{ line.sentiment_analysis_score }}</span>
-                    <br/>
-                    <br/>
-                    <br/>
-                    {{line.review}}
-                </a>
-            {% endfor %}
-            </div>
-            <div class="output">
-                <h3><font color="#ff5a5f">Airbnb</font></h3>
-                {% for line in airbnb_output %}
-                <a href="{{ line.listing_url }}" class="tile" target="_blank">
-                    <img src="{{ line.image_url }}" class="tile_icon">
-                    <b>{{ line.name }}</b><br/>
-                    Sentiment:
-                    <span class="sentiments">
-                        {{ line.sentiment_analysis_score }}</span>
-                    <br/>
-                    <br/>
-                    <br/>
-                    {{line.review}}
-                </a>
-                {% endfor %}
-            </div>
+            <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input">
+            </form>
+            <br/>
 
-{#            <div class="pagination">#}
-{#                <span class="step-links">#}
-{#                    {% if output.has_previous %}#}
-{#                    <a href= "{{magic_url}}&page={{ output.previous_page_number }}">previous</a>#}
-{#                    {% endif %}#}
-{##}
-{#                    <!-- Showing the page numbers in Html Page -->#}
-{#                    <span class="current">#}
-{#                    Page _{{ output.number }}_ of _{{ output.paginator.num_pages }}_#}
-{#                    </span>#}
-{##}
-{#                    {% if output.has_next %}#}
-{#                    <a href= "{{magic_url}}&page={{ output.next_page_number }}">next</a>#}
-{#                    {% endif %}#}
-{#                </span>#}
+            {% if airbnb_output or hotel_output %}
+            <h4>Results:</h4>
+{#            <p>{{ search }}</p><br/>#}
+{#            <div class="tile">#}
+{#                    <div class="imgWrap">#}
+{#                        <img src="{{ best_result.image_url }}" class="tile_icon">#}
+{#                    </div>#}
+{#                    <br/>#}
+{#                    <b>{{ best_result.name }}</b><br/>#}
+{#                    Similarity Score:#}
+{#                    <span class="sentiments">#}
+{#                        {{ best_result.score }}</span>#}
+{#                    <br/>#}
+{#                    <a href="{{ best_result.listing_url }}"  target="_blank">Link</a>#}
+{#                    <p>{{ line.average_sent_score }}</p>#}
+{#                    <p>{{ line.min_sent_score }}</p>#}
+{#                    <p style="font-size: 3px">{{ line.min_sent_review }}</p>#}
+{#                    <br/>#}
+{#                    <p>{{ line.max_sent_score }}</p>#}
+{#                    <br/>#}
 {#            </div>#}
+{#            <br/>#}
+{#            <br/>#}
+{##}
+{##}
+{#            <h5>Other places you might be interested in:</h5>#}
+            <form id="list_select">
+                <input type="radio" name="type" value="hotel-airbnb" onclick="change_list(event)">
+                <span class="check_label">-Hotel-Airbnb </span>
+                <input type="radio" name="type" value="total" onclick="change_list(event)" checked>
+                <span class="check_label">-Overall </span>
+            </form>
+
+            <div class="main_bottom">
+                <div class="output" id="hotel_output" style="display: none">
+                    <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
+                    <div id="hotel_output_graph">
+                        <p class="explain">
+                            The following graph shows the distribution of sentiments of reviews that were retrieved by our IR system that was trained only on hotel reviews. 
+                        </p>
+                    </div>
+                    {% for line in hotel_output %}
+                    <div class="tile">
+                        {% if line.rating == None %}
+                            <p>No Rating Available</p>
+                        {% else %}
+                        <!-- adapted from https://codepen.io/Bluetidepro/pen/GkpEa?editors=1100-->
+                            <div class="star-ratings-css">
+                              <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                            </div>
+                            <br/>
+                        <!-- end adaptation -->
+                        {% endif %}  
+
+                        <a  href="{{ line.listing_url }}" target="_blank">Link</a>
+
+                        <div class="imgWrap">
+                            <img src="{{ line.image_url }}" class="tile_icon">
+                        </div>
+                        <br/>
+                        <b>{{ line.name }}</b><br/>
+                        Similarity Score:
+                        {{ line.score }}
+                        <br/>
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
+                        <br/>
+
+                        <div class="toggle-review">
+                            <p class="show-hide">Show most positive review</p>
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
+                                {{ line.max_sent_review }}
+                            </div>
+                        </div>
+
+                        <div class="toggle-review">
+                            <p class="show-hide">Show most negative review</p>
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
+                                {{ line.min_sent_review }}
+                            </div>
+                        </div>
+
+                        <br/>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="output" id="airbnb_output" style="display: none">
+                    <h3><font color="#ff5a5f">Airbnb</font></h3>
+                    <div id="airbnb_output_graph">
+                        <p class="explain">
+                            The following graph shows the distribution of sentiments of reviews that were retrieved by our IR system that was trained only on airbnb reviews. 
+                        </p>
+                    </div>
+                    {% for line in airbnb_output %}
+                    <div class="tile">
+                        {% if line.rating == None %}
+                            <p>No Rating Available</p>
+                        {% else %}
+                        <!-- adapted from https://codepen.io/Bluetidepro/pen/GkpEa?editors=1100-->
+                            <div class="star-ratings-css">
+                              <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                            </div>
+                            <br/>
+                        <!-- end adaptation -->
+                        {% endif %}  
+
+                        <a  href="{{ line.listing_url }}" target="_blank">Link</a>
+
+                        <div class="imgWrap">
+                            <img src="{{ line.image_url }}" class="tile_icon">
+                        </div>
+                        <br/>
+                        <b>{{ line.name }}</b><br/>
+                        Similarity Score:
+                        {{ line.score }}
+                        <br/>
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
+                        <br/>
+
+                        <div class="toggle-review">
+                            <p class="show-hide">Show most positive review</p>
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
+                                {{ line.max_sent_review }}
+                            </div>
+                        </div>
+
+                        <div class="toggle-review">
+                            <p class="show-hide">Show most negative review</p>
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
+                                {{ line.min_sent_review }}
+                            </div>
+                        </div>
+
+                        <br/>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="output" id="total_output" >
+                    <h3><font>Overall</font></h3>
+                    <div>
+                        <p class="explain">
+                            The following graph(s) shows the distribution of sentiments of reviews that were retrieved by our IR system that was trained on both hotel and AirBnB reviews. Note that because there are only 76 hotel listings and 23714 AirBnB listings, this IR system component tends to predominantly retrieve Airbnb reviews. Select the Hotel or AirBnB options to see type filtered IR system.   
+                        </p>
+                        <div id="hotel_graph"></div>
+                        <div id="airbnb_graph"></div>
+                    </div>
+                        
+                    {% for line in overall_output %}
+                    <div class="tile">
+
+
+                        {% if line.rating == None %}
+                            <p>No Rating Available</p>
+                        {% else %}
+                        <!-- adapted from https://codepen.io/Bluetidepro/pen/GkpEa?editors=1100-->
+                            <div class="star-ratings-css">
+                              <div class="star-ratings-css-top" style="width: {{line.rating}}%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                              <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                            </div>
+                            <br/>
+                        <!-- end adaptation -->
+                        {% endif %} 
+
+                        <a  href="{{ line.listing_url }}" target="_blank">Link</a>
+
+                        <div class="imgWrap">
+                            <img src="{{ line.image_url }}" class="tile_icon">
+                        </div>
+                        <br/>
+                        <b>{{ line.name }}</b><br/>
+                        Similarity Score:
+                        {{ line.score }}
+                        <br/>
+                        Average Sentiment Score:
+                        <span class="sentiments">{{ line.avg_sent_score }}</span>
+                        <br/>
+
+                        <div class="toggle-review">
+                            <p class="show-hide">Show most positive review</p>
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.max_sent_score }}</span>
+                                {{ line.max_sent_review }}
+                            </div>
+                        </div>
+
+                        <div class="toggle-review">
+                            <p class="show-hide">Show most negative review</p>
+                            <div class="review" style="display: none">
+                                Sentiment Score: <span class="sentiments">{{ line.min_sent_score }}</span>
+                                {{ line.min_sent_review }}
+                            </div>
+                        </div>
+
+                        <br/>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
             {% endif %}
+            </div>
         </div>
     </body>
 </html>
+<style>
+.bar text {
+  fill: #fff;
+  font: 10px sans-serif;
+}
+</style>
+<script type="text/javascript"> 
+var render_graph = function(elementId ,data) { 
+    if (data.length <= 1) {
+        return;
+    }
+
+    var formatCount = d3.format(",.0f");
+    var width = 400;
+    var height = 300; 
+    var svg = d3.select(elementId).append("svg").attr("height", height).attr("width", width);
+
+    margin = {top: 10, right: 5, bottom: 30, left: 35},
+    width = +width - margin.left - margin.right,
+    height = +height - margin.top - margin.bottom,
+    svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleLinear().domain([-1, 1])
+    .rangeRound([margin.left, width]);
+
+    var bins = d3.histogram()
+    .domain(x.domain())
+    .thresholds(x.ticks(20))
+    (data);
+
+    var y = d3.scaleLinear()
+    .domain([0, d3.max(bins, function(d) { return d.length; })])
+    .range([height, margin.top]);
+
+    var bar = svg.append("g").selectAll(".bar")
+    .data(bins)
+    .enter().append("g")
+    .attr("class", "bar")
+    .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; });
+
+    bar.append("rect")
+    .attr("x", 1)
+    .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
+    .attr("height", function(d) { return height - y(d.length); })
+    .attr("fill", function(d) { 
+        if (elementId.includes("airbnb")) {
+            return d3.rgb("#FF5a5F");
+        } else {
+            return d3.rgb("#589442");
+        }
+    } );
+
+    svg.append("g")
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+    svg.append("g")
+    .attr("class", "axis axis--y")
+    .attr("transform", "translate(" + margin.left + "," + 0 +")")
+    .call(d3.axisLeft(y));
+
+    svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "start")
+    .attr("x", 0)
+    .attr("y", height + 30)
+    .text("Negative Reviews");
+
+    svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", height + 30)
+    .text("Positive Reviews");
+
+    if(elementId.includes("airbnb")) {
+        title = "Airbnb Review Sentiments"
+    }
+    else{
+        title = "TripAdvisor Review Sentiments"
+    }
+
+    svg.append("text")
+    .attr("x", width/2)             
+    .attr("y", 30)
+    .attr("text-anchor", "middle")  
+    .style("font-size", "16px") 
+    .text(title);
+}; 
+
+var parse_django_var = function(name) {
+    var temp = name; 
+    temp = temp.substring(1, temp.length-1).split(",").map(function (e) { return parseFloat(e); });
+    return temp;
+}
+
+   var airbnb_sentscores = parse_django_var("{{airbnb_sentscores}}");
+   var hotel_sentscores = parse_django_var("{{hotel_sentscores}}");
+   var hotel_output_sentscores = parse_django_var("{{hotel_output_sentscores}}");
+   var airbnb_output_sentscores = parse_django_var("{{airbnb_output_sentscores}}");
+   render_graph("#airbnb_graph", airbnb_sentscores);
+   render_graph("#hotel_graph", hotel_sentscores);
+   render_graph("#hotel_output_graph", hotel_output_sentscores);
+   render_graph("#airbnb_output_graph", airbnb_output_sentscores);
+</script>
