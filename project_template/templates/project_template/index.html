@@ -105,7 +105,11 @@
             <div class="main_bottom">
                 <div class="output" id="hotel_output" style="display: none">
                     <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
-                    <div id="hotel_output_graph"></div>
+                    <div id="hotel_output_graph">
+                        <p class="explain">
+                            The following graph shows the distribution of sentiments of reviews that were retrieved by our IR system that was trained only on hotel reviews. 
+                        </p>
+                    </div>
                     {% for line in hotel_output %}
                     <div class="tile">
                         {% if line.rating == None %}
@@ -156,7 +160,11 @@
                 </div>
                 <div class="output" id="airbnb_output" style="display: none">
                     <h3><font color="#ff5a5f">Airbnb</font></h3>
-                    <div id="airbnb_output_graph"></div>
+                    <div id="airbnb_output_graph">
+                        <p class="explain">
+                            The following graph shows the distribution of sentiments of reviews that were retrieved by our IR system that was trained only on airbnb reviews. 
+                        </p>
+                    </div>
                     {% for line in airbnb_output %}
                     <div class="tile">
                         {% if line.rating == None %}
@@ -207,8 +215,14 @@
                 </div>
                 <div class="output" id="total_output" >
                     <h3><font>Overall</font></h3>
-                    <div id="hotel_graph"></div>
-                    <div id="airbnb_graph"></div>
+                    <div>
+                        <p class="explain">
+                            The following graph shows the distribution of sentiments of reviews that were retrieved by our IR system that was trained on both hotel and AirBnB reviews. Note that because there are only 76 hotel listings and 23714 AirBnB listings, this IR system component tends to predominantly retrieve Airbnb reviews. Select the Hotel or AirBnB options to see type filtered IR system.   
+                        </p>
+                        <div id="hotel_graph"></div>
+                        <div id="airbnb_graph"></div>
+                    </div>
+                        
                     {% for line in overall_output %}
                     <div class="tile">
 
