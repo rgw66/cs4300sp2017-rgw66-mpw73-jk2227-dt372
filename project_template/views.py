@@ -18,15 +18,17 @@ def index(request):
     airbnb_sentscores = [] 
     hotel_sentscores = [] 
     overall_output = []
+    hotel_output_sentscores = []
+    airbnb_output_sentscores = []
     query = ''
     if request.GET.get('search'):
         query = request.GET.get('search')
         airbnb_output = get_airbnb_results(query)
         hotel_output = get_hotel_results(query)
-        #for airbnb_info in airbnb_output:
-        #  airbnb_sentscores.extend(airbnb_info['sent_scores'])
-        #for hotel_info in hotel_output:
-        #  hotel_sentscores.extend(hotel_info['sent_scores'])
+        for airbnb_info in airbnb_output:
+          airbnb_output_sentscores.extend(airbnb_info['sent_scores'])
+        for hotel_info in hotel_output:
+          hotel_output_sentscores.extend(hotel_info['sent_scores'])
         overall_output = get_overall_results(query)
         for info in overall_output:
           if info['is_airbnb']:
@@ -42,7 +44,9 @@ def index(request):
                            'magic_url': request.get_full_path(),
                            'words': words,
                            'hotel_sentscores': hotel_sentscores,
-                           'airbnb_sentscores': airbnb_sentscores
+                           'airbnb_sentscores': airbnb_sentscores,
+                           'hotel_output_sentscores': hotel_output_sentscores,
+                           'airbnb_output_sentscores': airbnb_output_sentscores
                            })
 
 def refine(request):

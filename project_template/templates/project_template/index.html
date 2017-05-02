@@ -105,6 +105,7 @@
             <div class="main_bottom">
                 <div class="output" id="hotel_output" style="display: none">
                     <h3><font color="black">Ho</font><font color="#589442">tel</font></h3>
+                    <div id="hotel_output_graph"></div>
                     {% for line in hotel_output %}
                     <div class="tile">
                         {% if line.rating == None %}
@@ -155,6 +156,7 @@
                 </div>
                 <div class="output" id="airbnb_output" style="display: none">
                     <h3><font color="#ff5a5f">Airbnb</font></h3>
+                    <div id="airbnb_output_graph"></div>
                     {% for line in airbnb_output %}
                     <div class="tile">
                         {% if line.rating == None %}
@@ -309,7 +311,7 @@ var render_graph = function(elementId ,data) {
     .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
     .attr("height", function(d) { return height - y(d.length); })
     .attr("fill", function(d) { 
-        if (elementId == "#airbnb_graph") {
+        if (elementId.includes("airbnb")) {
             return d3.rgb("#FF5a5F");
         } else {
             return d3.rgb("#589442");
@@ -335,11 +337,18 @@ var render_graph = function(elementId ,data) {
     .call(d3.axisBottom(x));
 }; 
 
-   var airbnb_sentscores = "{{airbnb_sentscores}}";
-   airbnb_sentscores = airbnb_sentscores.substring(1, airbnb_sentscores.length-1).split(",").map(function (e) { return parseFloat(e); });
-   var hotel_sentscores = "{{hotel_sentscores}}";
-   console.log(hotel_sentscores)
-   hotel_sentscores = hotel_sentscores.substring(1, hotel_sentscores.length-1).split(",").map(function (e) { return parseFloat(e); });
+var parse_django_var = function(name) {
+    var temp = name; 
+    temp = temp.substring(1, temp.length-1).split(",").map(function (e) { return parseFloat(e); });
+    return temp;
+}
+
+   var airbnb_sentscores = parse_django_var("{{airbnb_sentscores}}");
+   var hotel_sentscores = parse_django_var("{{hotel_sentscores}}");
+   var hotel_output_sentscores = parse_django_var("{{hotel_output_sentscores}}");
+   var airbnb_output_sentscores = parse_django_var("{{airbnb_output_sentscores}}");
    render_graph("#airbnb_graph", airbnb_sentscores);
    render_graph("#hotel_graph", hotel_sentscores);
+   render_graph("#hotel_output_graph", hotel_output_sentscores);
+   render_graph("#airbnb_output_graph", airbnb_output_sentscores);
 </script>
