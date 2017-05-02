@@ -1,6 +1,5 @@
 from .models import Docs
 import os
-import Levenshtein
 import json
 import pickle
 import numpy as np
