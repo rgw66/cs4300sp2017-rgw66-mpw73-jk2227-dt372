@@ -111,21 +111,28 @@ def get_reviews(site,ind_lst):
 
 def search_lda(query, vectorizer, ht_mat, tt_mat, mat_to_listing_dict, 
                svd_weights, svd_topics, word_to_index, index_to_word, 
-               hs, top_k = 10):
+               hs, top_k = 10, bottom = False):
     related_words = []
     for q in query.split():
-        related_words += closest_words(q, svd_weights, svd_topics, word_to_index, index_to_word, k=10)
+        related_words += closest_words(q, svd_weights, svd_topics, word_to_index, index_to_word)
     related_words = list(set(related_words))
-    related_words = [w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)[:10]]
-    # print(related_words)
+    related_words = [w[0] for w in sorted(related_words, key = lambda item: item[1], reverse = True)[:5]]
     vec = vectorizer.transform([query]).todense().T
     results = np.multiply(np.dot(ht_mat, normalize(np.dot(tt_mat, vec), axis = 0)).T, hs)
-    indices = np.squeeze(np.asarray(np.argsort(results)))[::-1].T[:top_k]
-    scores = np.squeeze(np.asarray(np.sort(results)))[::-1].T[:top_k]    
-    listings = np.zeros(indices.shape)
-    for i in range(indices.shape[0]):
-        listings[i] = mat_to_listing_dict[indices[i]]
-    return (listings.tolist(), indices.tolist(), scores.tolist(), related_words)
+    if (bottom):
+        indices = np.squeeze(np.asarray(np.argsort(results)))[::-1].T[-top_k:]
+        scores = np.squeeze(np.asarray(np.sort(results)))[::-1].T[-top_k:]    
+        listings = np.zeros(indices.shape)
+        for i in range(indices.shape[0]):
+            listings[i] = mat_to_listing_dict[indices[i]]
+        return (listings.tolist(), indices.tolist(), scores.tolist(), related_words)
+    else:
+        indices = np.squeeze(np.asarray(np.argsort(results)))[::-1].T[:top_k]
+        scores = np.squeeze(np.asarray(np.sort(results)))[::-1].T[:top_k]    
+        listings = np.zeros(indices.shape)
+        for i in range(indices.shape[0]):
+            listings[i] = mat_to_listing_dict[indices[i]]
+        return (listings.tolist(), indices.tolist(), scores.tolist(), related_words)
 
 
 def get_airbnb_results(query):
