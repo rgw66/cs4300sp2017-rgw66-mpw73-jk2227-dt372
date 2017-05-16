@@ -149,8 +149,11 @@ def get_airbnb_results(query, bottom=False):
                                            airbnb_hs,
                                             bottom = bottom)
     ordered_listings = []
-    min_max_indices = [] 
+    min_max_indices = []
+    total_listings = 0
     for (l, ind, score) in zip(listings, indices, scores):
+        if total_listings == 10:
+            continue
         listing_id = str(int(l))
         airbnb_listing_info = airbnb_listings[listing_id]
         name = airbnb_listing_info['name']
@@ -178,7 +181,7 @@ def get_airbnb_results(query, bottom=False):
             'sent_scores': sent_scores,
             'rating': airbnb_listing_info['rating']
         })
-
+        total_listings += 1
     reviews = get_reviews('airbnb', min_max_indices)
     for i, review in enumerate(reviews):
         if i % 2 == 0: 
@@ -270,6 +273,8 @@ def get_overall_results(query, bottom=False):
     min_max_indices = [] 
 
     threshold = (ta_lda_ht.shape)[0]
+
+
     for (l, ind, score) in zip(listings, indices, scores):
         if (ind > threshold):
             listing_id = str(int(l))
