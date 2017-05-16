@@ -43,8 +43,11 @@
                 {% endfor %}
                 </div>
                 <br/>
+                <input id="input" type="text" name="search" class="form-control" placeholder="Your Input" onchange="typed_search(event)">
+                <br/>
+                <br/>
                 <div class="submit_button" id="submit_button">
-                    <button type='button' class="btn btn-info" onclick="refine_words()"> Refine Search </button>
+                    <button type='button' class="btn btn-info" onclick="get_refine_words()"> Refine Search </button>
                 </div>
                 <br/>
                 <p>Optionally add additional related search terms based on what you've selected.</p>
@@ -55,9 +58,9 @@
                     <br/>
                     <p>Select a box that is best for you</p>
                     <br/>
-                    <div class="refine_word_cloud" id="hotel_refine" onclick="submit_form(event)">
+                    <div class="refine_word_cloud" id="hotel_refine" onclick="refine_words(event)">
                     </div>
-                    <div class="refine_word_cloud" id="airbnb_refine" onclick="submit_form(event)">
+                    <div class="refine_word_cloud" id="airbnb_refine" onclick="refine_words(event)">
                     </div>
     {#            <input id="input" type="input" name="search" class="form-control" placeholder="Your Input">#}
                 </div>
@@ -67,8 +70,6 @@
                 <div class="submit_button" id="submit_button">
                     <button type='submit' class="btn btn-info"> Submit </button>
                 </div>
-            <br/>
-            <input id="input" type="hidden" name="search" class="form-control" placeholder="Your Input">
             </form>
             <br/>
 

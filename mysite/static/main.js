@@ -10,9 +10,9 @@ var wc_selection = function(e){
     if (e.target.className == "wc_word") {
         if (selected_words.indexOf(e.target.id) == -1) {
             selected_words.push(e.target.id);
-            e.target.className = "wc_selected";
+            e.target.className = "wc_word wc_selected";
         }
-    }else if (e.target.className == "wc_selected"){
+    }else if (e.target.className == "wc_word wc_selected"){
         var i = selected_words.indexOf(e.target.id);
         selected_words.splice(i,1);
         e.target.className = "wc_word";
@@ -22,7 +22,24 @@ var wc_selection = function(e){
     $("#input").val(selection);
 };
 
-var refine_words = function(){
+var typed_search = function(e){
+    var input = $(e.target).val();
+    input = input.split(" ");
+    selected_words = [];
+    $(".wc_word").each(function(elem){
+        this.className = "wc_word"
+    });
+
+    input.forEach(function(word){
+         if (selected_words.indexOf(word) == -1) {
+             selected_words.push(word);
+             $("#" + word).addClass("wc_selected");
+         }
+    });
+    console.log(selected_words)
+};
+
+var get_refine_words = function(){
         $.ajax({
             url: "/pt/refine",
             type:"GET",
@@ -53,13 +70,14 @@ var refine_words = function(){
                             '<span class="refine">' + d + '</span>'
                         )
                     });
-                $("#refine_form").slideDown("fast", function(){});
+                    $(".selected").removeClass("selected");
+                    $("#refine_form").slideDown("fast", function(){});
                 }, 500);
             }
         });
 };
 
-var submit_form = function(e) {
+var refine_words = function(e) {
     var element;
     if (e.target.className == "refine") {
         element = e.target.parentNode
@@ -69,27 +87,36 @@ var submit_form = function(e) {
     if ($(element).hasClass("selected")){
         element.childNodes.forEach(function (elem) {
             if (elem.className == "refine") {
-                selected_words.splice(selected_words.indexOf(elem))
+                selected_words.splice(selected_words.indexOf(elem.innerText),1);
+                $("#" + elem.innerText).removeClass("wc_selected");
             }
         });
         $(element).removeClass("selected");
-    }else{
+    }else if ($(".selected").length == 0){
         var select = 0;
         element.childNodes.forEach(function (elem) {
             if (elem.className == "refine") {
                 if (selected_words.indexOf(elem.innerHTML) == -1) {
                     if (elem.innerHTML!="No Refining Words Available" && elem.innerHTML!="Try Selecting More Words") {
                         select = 1;
-                        selected_words.push(elem.innerHTML)
+                        selected_words.push(elem.innerHTML);
+                        $("#" + elem.innerHTML).addClass("wc_selected");
                     }
                 }
             }
         });
         if (select) {
             $(element).addClass("selected");
+             element.childNodes.forEach(function (elem) {
+                 var word = elem.innerText;
+                  if (selected_words.indexOf(word) == -1) {
+                      selected_words.push(word);
+                      $("#" + word).addClass("wc_selected");
+                  }
+             });
         }
     }
-    console.log(selected_words)
+    console.log(selected_words);
     var selection = selected_words.join(" ");
     $("#input").val(selection);
 };
@@ -119,9 +146,9 @@ $(document).ready(function(){
 
     $('.toggle-review').on('click', function() {  
         $(this).children('.review').toggle();
-        curr_text = $(this).children('.show-hide').text(); 
+        var curr_text = $(this).children('.show-hide').text();
         if (curr_text.indexOf('Show') > -1){
-            new_text = curr_text.replace("Show", "Hide");
+            var new_text = curr_text.replace("Show", "Hide");
         }
         else{
             new_text = new_text.replace("Hide", "Show");
