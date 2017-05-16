@@ -144,16 +144,16 @@ $(document).ready(function(){
         this.style = "background-color: " + color(this.innerHTML) + ";"
     });
 
-    $('.toggle-review').on('click', function() {  
+    $('.toggle-review').on('click', function() {
         $(this).children('.review').toggle();
-        var curr_text = $(this).children('.show-hide').text();
+        curr_text = $(this).children('.show-hide').text();
         if (curr_text.indexOf('Show') > -1){
-            var new_text = curr_text.replace("Show", "Hide");
+            new_text = curr_text.replace("Show", "Hide");
         }
         else{
             new_text = new_text.replace("Hide", "Show");
         }
-        curr_text = $(this).children('.show-hide').text(new_text); 
+        curr_text = $(this).children('.show-hide').text(new_text);
     });
 });
 
